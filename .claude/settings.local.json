@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "PowerShell(Write-Output \"node:\"; \\(Get-Command node -ErrorAction SilentlyContinue\\).Source; Write-Output \"npx:\"; \\(Get-Command npx -ErrorAction SilentlyContinue\\).Source; Write-Output \"py:\"; \\(Get-Command py -ErrorAction SilentlyContinue\\).Source)",
+      "WebFetch(domain:cheongwoldang.com)",
+      "Bash(npx tsc *)",
+      "Bash(echo \"---EXIT:$?---\")",
+      "Bash(node -e ' *)",
+      "Bash(rm -f /tmp/count*.cjs)",
+      "Bash(\"C:/Program Files/nodejs/node.exe\" node_modules/typescript/bin/tsc --noEmit -p tsconfig.json)",
+      "Bash(cd \"/c/Users/SKYPCPRO/Desktop/무기제작소 코딩\" && rm -f /tmp/rename.cjs && \"C:/Program Files/nodejs/node.exe\" node_modules/typescript/bin/tsc --noEmit -p tsconfig.json && echo \"TYPECHECK_OK\")",
+      "Bash(cd \"/c/Users/SKYPCPRO/Desktop/무기제작소 코딩\" && grep -c \"6가지 항목으로 구성됩니다\" src/lib/reports/offers.ts)"
+    ]
+  }
+}
