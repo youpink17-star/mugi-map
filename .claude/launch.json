@@ -6,6 +6,30 @@
       "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
       "runtimeArgs": ["node_modules/next/dist/bin/next", "dev"],
       "autoPort": true
+    },
+    {
+      "name": "factory",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
+      "runtimeArgs": [
+        "C:\\Users\\SKYPCPRO\\Desktop\\content-factory\\node_modules\\next\\dist\\bin\\next",
+        "dev",
+        "C:\\Users\\SKYPCPRO\\Desktop\\content-factory",
+        "-p",
+        "3001"
+      ],
+      "port": 3001
+    },
+    {
+      "name": "diagnosis",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
+      "runtimeArgs": [
+        "C:\\Users\\SKYPCPRO\\Desktop\\무기진단\\node_modules\\next\\dist\\bin\\next",
+        "dev",
+        "C:\\Users\\SKYPCPRO\\Desktop\\무기진단",
+        "-p",
+        "3002"
+      ],
+      "port": 3002
     }
   ]
 }

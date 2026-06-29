@@ -1,8 +1,31 @@
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+/* 한글 픽셀(비트맵) 폰트 — 빈칸 여정 맵의 게임 느낌용 (실패해도 sans로 폴백) */
+@import url("https://cdn.jsdelivr.net/npm/galmuri/dist/Galmuri11.css");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* 픽셀 게임 느낌 유틸 */
+.font-pixel {
+  font-family: "Galmuri11", "Pretendard", monospace;
+  letter-spacing: -0.01em;
+}
+.pixel-shadow {
+  box-shadow: 4px 4px 0 0 #07071f;
+}
+.pixel-shadow-pink {
+  box-shadow: 4px 4px 0 0 #ff2f8f;
+}
+
+/* 다음 채울 노드 살짝 통통 튀기 */
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+.animate-bounce-slow {
+  animation: bounce-slow 1.6s ease-in-out infinite;
+}
 
 :root {
   color-scheme: light;

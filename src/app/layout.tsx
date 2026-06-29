@@ -3,17 +3,17 @@ import "./globals.css";
 import AppShell from "@/components/AppShell";
 
 export const metadata: Metadata = {
-  title: "무기제작소 — 사업·마케팅 무기진단센터",
+  title: "무기지도 — 1인사업가의 사업 지도",
   description:
-    "열심히 하는데 왜 안 팔릴까요? 상품이 나빠서가 아닙니다. 팔리는 구조를 못 찾은 것입니다. 사업 단계에 맞춰 1:1로 분석해드립니다.",
+    "머릿속에만 맴돌던 내 사업을 한 장의 지도로. 흩어진 강점·상품·타겟·콘텐츠를 모아 지금 채울 칸과 다음 방향을 짚어줍니다.",
   openGraph: {
-    title: "무기제작소 — 사업·마케팅 무기진단센터",
-    description: "팔리는 구조를 못 찾은 것입니다. 사업 단계에 맞춰 진단해드립니다.",
+    title: "무기지도 — 1인사업가의 사업 지도",
+    description: "흩어진 내 사업을 한 장의 지도로 모아, 다음에 갈 방향을 짚어줍니다.",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#07071F",
+  themeColor: "#ECE6FB",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
