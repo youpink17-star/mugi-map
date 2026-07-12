@@ -12,6 +12,7 @@ export interface StoreProduct {
   price: string; // 표기용 (예: "149,000원")
   desc: string;
   badge?: string; // "대표 상품" | "베타" 등
+  highlight?: boolean; // 이 층에서 가장 미는 상품 — 핑크로 강조
   envKey?: string; // 이 상품의 외부 링크 환경변수 이름
   defaultUrl?: string; // env 미설정 시 쓸 기본 링크(이미 라이브인 상품)
 }
@@ -40,50 +41,47 @@ export const STORE_TIERS: StoreTier[] = [
     products: [
       { id: "free-wiki", title: "무기위키", price: "무료", desc: "내 사업을 한 장으로 정리하는 사업 위키" },
       { id: "free-diagnosis", title: "무기진단", price: "무료", desc: "내 강점·유형을 찾는 진단" },
-      { id: "free-checklist", title: "무료 체크리스트·템플릿", price: "무료", desc: "지금 바로 쓰는 간단 템플릿" },
     ],
   },
   {
     tier: "entry",
     emoji: "🌱",
     label: "가볍게 입문하기",
-    goal: "커피 한 잔 값으로 첫 실전 감각을 얻으세요",
+    goal: "지금 바로 받아보는 무료 리포트로 먼저 감을 잡으세요",
     products: [
-      { id: "report-item", title: "사업 아이템 발굴 리포트", price: "자세히 보기", desc: "10문항이면 나에게 맞는 아이템 방향을 40p 리포트로", badge: "바로 가능", envKey: "NEXT_PUBLIC_URL_REPORT_ITEM", defaultUrl: "https://funny-cactus-item.netlify.app/" },
-      { id: "report-marketing", title: "마케팅 전략 리포트", price: "자세히 보기", desc: "안 팔리는 진짜 이유와 나에게 맞는 마케팅 방향", badge: "바로 가능", envKey: "NEXT_PUBLIC_URL_REPORT_MARKETING", defaultUrl: "https://funny-cactus-25ffa8.netlify.app/" },
-      { id: "experiment-book", title: "AI 마케팅 실험북", price: "48,000원", desc: "AI로 마케팅을 직접 실험해보는 워크북", envKey: "NEXT_PUBLIC_URL_EXPERIMENT_BOOK" },
+      { id: "report-item", title: "사업 아이템 발굴 리포트", price: "자세히 보기", desc: "10문항으로 나에게 맞는 아이템 방향을 찾아드려요", envKey: "NEXT_PUBLIC_URL_REPORT_ITEM", defaultUrl: "https://funny-cactus-item.netlify.app/" },
+      { id: "report-marketing", title: "마케팅 전략 리포트", price: "자세히 보기", desc: "안 팔리는 이유와 나에게 맞는 방향을 알려드려요", envKey: "NEXT_PUBLIC_URL_REPORT_MARKETING", defaultUrl: "https://funny-cactus-25ffa8.netlify.app/" },
     ],
   },
   {
     tier: "flagship",
     emoji: "⭐",
-    label: "대표 상품 — 노션 콘텐츠 제조실",
-    goal: "막힘 없이 콘텐츠를 계속 만들어내는 나만의 시스템",
+    label: "AI 콘텐츠 제조실",
+    goal: "막힘 없이 콘텐츠와 마케팅을 계속 만들어내는 나만의 시스템",
     products: [
-      { id: "studio-beta", title: "콘텐츠 제조실 베타", price: "99,000원", desc: "콘텐츠 제조 시스템 베타 버전", badge: "대표 상품", envKey: "NEXT_PUBLIC_URL_STUDIO_BETA" },
-      { id: "studio-full", title: "콘텐츠 제조실 정식판", price: "149,000원", desc: "제목·후킹·본문·CTA를 계속 찍어내는 완성판", badge: "BEST", envKey: "NEXT_PUBLIC_URL_STUDIO_FULL" },
-      { id: "studio-bundle", title: "확장판·번들", price: "199,000원~", desc: "제조실 + 확장 템플릿 번들", envKey: "NEXT_PUBLIC_URL_STUDIO_BUNDLE" },
+      { id: "experiment-book", title: "48시간 안에 끝내는 AI 마케팅 실험북", price: "자세히 보기", desc: "가진 트래픽을 매출로 바꾸는 실험을 직접 해봐요", badge: "전자책", highlight: true, envKey: "NEXT_PUBLIC_URL_EXPERIMENT_BOOK" },
+      { id: "studio-full", title: "콘텐츠 제조실 (노션)", price: "자세히 보기", desc: "여러 채널 콘텐츠를 이 안에서 전부 찍어내드려요", badge: "NOTION", envKey: "NEXT_PUBLIC_URL_STUDIO_FULL" },
+      { id: "marketing-studio", title: "마케팅 제조실 (노션)", price: "자세히 보기", desc: "타겟부터 문구까지 마케팅을 직접 설계해드려요", badge: "NOTION", envKey: "NEXT_PUBLIC_URL_MARKETING_STUDIO" },
     ],
   },
   {
     tier: "diagnosis",
     emoji: "🎯",
-    label: "막힌 곳 뚫기 (1:1·실행방)",
+    label: "막힌 곳 빠르게 뚫기",
     goal: "혼자 안 풀리는 지점을 함께 뚫습니다",
     products: [
-      { id: "diag-1on1", title: "1:1 무기진단", price: "350,000원~", desc: "내 사업을 1:1로 정밀 진단", envKey: "NEXT_PUBLIC_URL_DIAG_1ON1" },
-      { id: "content-room", title: "3주 콘텐츠 실행방", price: "300,000원~", desc: "3주간 실제로 콘텐츠를 완성하는 그룹 실행방", envKey: "NEXT_PUBLIC_URL_CONTENT_ROOM" },
-      { id: "diag-bundle", title: "제조실 + 진단 번들", price: "390,000원~", desc: "시스템과 1:1 진단을 함께", envKey: "NEXT_PUBLIC_URL_DIAG_BUNDLE" },
+      { id: "diag-1on1", title: "1:1 무기진단", price: "자세히 보기", desc: "내 강점과 상품을 함께 분석해 무기를 찾아드려요", envKey: "NEXT_PUBLIC_URL_DIAG_1ON1" },
+      { id: "content-room", title: "4주 콘텐츠 실행방", price: "자세히 보기", desc: "동료들과 함께 소통하며 콘텐츠를 완성해나가요", envKey: "NEXT_PUBLIC_URL_CONTENT_ROOM" },
     ],
   },
   {
     tier: "consulting",
     emoji: "👑",
-    label: "제대로 판을 짜기 (컨설팅)",
-    goal: "판매 구조 자체를 함께 설계합니다",
+    label: "맞춤형 전략 컨설팅",
+    goal: "사업 마케팅 전략을 처음부터 다시 설계합니다",
     products: [
-      { id: "consult-4w", title: "4주 무기설계 컨설팅", price: "1,500,000원", desc: "내 무기와 상품 구조를 4주간 설계", envKey: "NEXT_PUBLIC_URL_CONSULT_4W" },
-      { id: "consult-8w", title: "8주 판매구조 구축 컨설팅", price: "3,000,000원~", desc: "판매 시스템 전체를 8주간 구축", envKey: "NEXT_PUBLIC_URL_CONSULT_8W" },
+      { id: "consult-funnel-strategy", title: "4주 마케팅 퍼널 구축 컨설팅", price: "자세히 보기", desc: "전체 마케팅 퍼널을 4주간 함께 설계해드려요", envKey: "NEXT_PUBLIC_URL_CONSULT_4W" },
+      { id: "consult-funnel-agency", title: "4주 마케팅 퍼널 구축 대행", price: "자세히 보기", desc: "전체 마케팅 퍼널을 4주간 대신 만들어드려요", envKey: "NEXT_PUBLIC_URL_CONSULT_8W" },
     ],
   },
 ];

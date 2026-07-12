@@ -11,7 +11,7 @@ export default function UpsellCard() {
   const items = [
     {
       emoji: "✍️",
-      title: "노션 콘텐츠 제조실",
+      title: "콘텐츠 제조실",
       desc: "위키에 채운 걸 실제 콘텐츠로 계속 찍어내는 시스템",
       url: STUDIO_URL,
     },

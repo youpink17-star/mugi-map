@@ -25,9 +25,9 @@ export default function ToolsPage() {
             내 무기를 실제 매출로
           </h1>
           <p className="mt-2 text-[13px] leading-relaxed text-white/70 md:text-[14px]">
-            무료로 내 무기를 찾고, 필요할 때 한 단계씩 올라가세요. 대표 상품
-            <b className="text-white"> 노션 콘텐츠 제조실</b>은 위키에 채운 걸 실제
-            콘텐츠로 계속 찍어냅니다.
+            무료로 내 무기를 찾고, 필요할 때 한 단계씩 올라가세요. 특히
+            <b className="text-white"> 48시간 AI 마케팅 실험북</b>은 조회수를 매출로
+            바꾸는 가장 빠른 첫걸음이에요.
           </p>
           <Link
             href="/wiki"
@@ -40,7 +40,6 @@ export default function ToolsPage() {
         {/* A~E 상품군 계단 */}
         <div className="mt-6 space-y-7">
           {STORE_TIERS.map((tier) => {
-            const flagship = tier.tier === "flagship";
             return (
               <section key={tier.tier}>
                 <div className="mb-2.5 flex items-baseline gap-2">
@@ -57,9 +56,9 @@ export default function ToolsPage() {
                       <div
                         className={[
                           "flex items-center gap-3 rounded-2xl border p-4 transition",
-                          flagship
-                            ? "border-pink/40 bg-soft-pink shadow-card"
-                            : "border-line bg-white",
+                          p.highlight
+                            ? "border-pink/40 bg-soft-pink shadow-[0_10px_24px_-10px_rgba(255,47,143,0.5)]"
+                            : "border-line bg-white shadow-card",
                           url ? "active:scale-[0.99] hover:border-pink" : "",
                         ].join(" ")}
                       >

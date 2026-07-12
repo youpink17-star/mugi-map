@@ -137,7 +137,10 @@
       "Bash(python3 -c ' *)",
       "Bash(grep -rn \"\\\\\"/tools\\\\\"\\\\|'/tools'\\\\|/tools\\\\`\" src --include=\"*.tsx\" --include=\"*.ts\")",
       "Bash(gh --version)",
-      "Bash(gh auth *)"
+      "Bash(gh auth *)",
+      "Bash(cd /tmp)",
+      "Bash(node -e 'console.log\\(\"동료들과 함께 소통하며 콘텐츠를 완성해나가요\".length\\)')",
+      "mcp__mcp-registry__search_mcp_registry"
     ]
   }
 }

@@ -26,6 +26,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local scratch files (should live in system temp, but guard just in case)
+/scratchpad
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
