@@ -227,7 +227,7 @@ export default function HomeView() {
             나중에 적을게요 · 바로 지도 열기
           </button>
 
-          {/* 상황별 자동 리포트 (10문항 → 40p PDF) */}
+          {/* 상황별 자동 리포트 (개인 정보 입력 → 40p 개인화 PDF) */}
           {(() => {
             const rep = reportForSelling(selling);
             const url = REPORT_ENV[rep.envKey] || rep.url;
@@ -245,7 +245,7 @@ export default function HomeView() {
                   <div className="flex items-center gap-1.5">
                     <p className="text-[13.5px] font-extrabold text-ink">{rep.title}</p>
                     <span className="rounded-full bg-app-bg px-1.5 py-0.5 text-[10px] font-bold text-muted">
-                      10문항
+                      40p 개인화
                     </span>
                   </div>
                   <p className="mt-0.5 text-[12px] leading-relaxed text-muted">{rep.desc}</p>

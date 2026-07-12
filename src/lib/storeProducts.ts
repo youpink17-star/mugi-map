@@ -48,8 +48,8 @@ export const STORE_TIERS: StoreTier[] = [
     label: "가볍게 입문하기",
     goal: "지금 바로 받아보는 무료 리포트로 먼저 감을 잡으세요",
     products: [
-      { id: "report-item", title: "사업 아이템 발굴 리포트", desc: "10문항으로 알아보는 나에게 맞는 아이템 방향", envKey: "NEXT_PUBLIC_URL_REPORT_ITEM", defaultUrl: "https://funny-cactus-item.netlify.app/" },
-      { id: "report-marketing", title: "마케팅 전략 리포트", desc: "안 팔리는 진짜 이유를 알려주는 마케팅 리포트", envKey: "NEXT_PUBLIC_URL_REPORT_MARKETING", defaultUrl: "https://funny-cactus-25ffa8.netlify.app/" },
+      { id: "report-item", title: "사업 아이템 발굴 리포트", desc: "내 사주와 특징으로 찾는 40p 아이템 리포트", envKey: "NEXT_PUBLIC_URL_REPORT_ITEM", defaultUrl: "https://funny-cactus-item.netlify.app/" },
+      { id: "report-marketing", title: "사업 및 마케팅 전략 리포트", desc: "내 사업에 맞춘 40p 개인화 마케팅 리포트", envKey: "NEXT_PUBLIC_URL_REPORT_MARKETING", defaultUrl: "https://funny-cactus-25ffa8.netlify.app/" },
     ],
   },
   {
@@ -59,8 +59,8 @@ export const STORE_TIERS: StoreTier[] = [
     goal: "막힘 없이 콘텐츠와 마케팅을 계속 만들어내는 나만의 시스템",
     products: [
       { id: "experiment-book", title: "48시간 안에 끝내는 AI 마케팅 실험북", desc: "가진 트래픽을 매출로 바꿔보는 48시간 실험북", badge: "전자책", envKey: "NEXT_PUBLIC_URL_EXPERIMENT_BOOK" },
-      { id: "studio-full", title: "콘텐츠 제조실 (노션)", desc: "여러 채널 콘텐츠를 한 번에 찍어내는 시스템", badge: "NOTION", envKey: "NEXT_PUBLIC_URL_STUDIO_FULL" },
-      { id: "marketing-studio", title: "마케팅 제조실 (노션)", desc: "타겟부터 문구까지 마케팅을 직접 설계하는 시스템", badge: "NOTION", envKey: "NEXT_PUBLIC_URL_MARKETING_STUDIO" },
+      { id: "studio-full", title: "콘텐츠 제조실", desc: "여러 채널 콘텐츠를 한 번에 찍어내는 시스템", badge: "NOTION", envKey: "NEXT_PUBLIC_URL_STUDIO_FULL" },
+      { id: "marketing-studio", title: "마케팅 제조실", desc: "타겟부터 문구까지 마케팅을 직접 설계하는 시스템", badge: "NOTION", envKey: "NEXT_PUBLIC_URL_MARKETING_STUDIO" },
     ],
   },
   {
@@ -99,14 +99,14 @@ export interface AutoReport {
 const REPORT_ITEM: AutoReport = {
   id: "report-item",
   title: "사업 아이템 발굴 리포트",
-  desc: "10문항이면 나에게 맞는 아이템 방향을 40p 리포트로 받아봐요",
+  desc: "내 사주와 특징을 입력하면 딱 맞는 아이템을 40p 리포트로 찾아드려요",
   url: "https://funny-cactus-item.netlify.app/",
   envKey: "NEXT_PUBLIC_URL_REPORT_ITEM",
 };
 const REPORT_MARKETING: AutoReport = {
   id: "report-marketing",
-  title: "마케팅 전략 리포트",
-  desc: "안 팔리는 진짜 이유와 나에게 맞는 마케팅 방향을 리포트로",
+  title: "사업 및 마케팅 전략 리포트",
+  desc: "내 사업에 맞춘 마케팅 방향을 40p 리포트로 개인화해 보내드려요",
   url: "https://funny-cactus-25ffa8.netlify.app/",
   envKey: "NEXT_PUBLIC_URL_REPORT_MARKETING",
 };
