@@ -25,9 +25,8 @@ export default function ToolsPage() {
             내 무기를 실제 매출로
           </h1>
           <p className="mt-2 text-[13px] leading-relaxed text-white/70 md:text-[14px]">
-            무료로 내 무기를 찾고, 필요할 때 한 단계씩 올라가세요. 특히
-            <b className="text-white"> 48시간 AI 마케팅 실험북</b>은 조회수를 매출로
-            바꾸는 가장 빠른 첫걸음이에요.
+            무료로 내 무기를 찾고, 필요할 때 한 단계씩 올라가세요. 콘텐츠·마케팅부터
+            1:1 진단까지, 지금 막힌 지점에 맞는 도구를 하나씩 골라보세요.
           </p>
           <Link
             href="/wiki"
@@ -55,10 +54,7 @@ export default function ToolsPage() {
                     const inner = (
                       <div
                         className={[
-                          "flex items-center gap-3 rounded-2xl border p-4 transition",
-                          p.highlight
-                            ? "border-pink/40 bg-soft-pink shadow-[0_10px_24px_-10px_rgba(255,47,143,0.5)]"
-                            : "border-line bg-white shadow-card",
+                          "flex items-center gap-3 rounded-2xl border border-line bg-white p-4 shadow-card transition",
                           url ? "active:scale-[0.99] hover:border-pink" : "",
                         ].join(" ")}
                       >
@@ -66,7 +62,7 @@ export default function ToolsPage() {
                           <div className="flex flex-wrap items-center gap-1.5">
                             <p className="text-[14.5px] font-extrabold text-ink">{p.title}</p>
                             {p.badge && (
-                              <span className="rounded-full bg-pink px-2 py-0.5 text-[10px] font-extrabold text-white">
+                              <span className="rounded-full bg-app-bg px-2 py-0.5 text-[10px] font-extrabold text-ink/60">
                                 {p.badge}
                               </span>
                             )}
@@ -74,11 +70,12 @@ export default function ToolsPage() {
                           <p className="mt-0.5 text-[12.5px] leading-relaxed text-muted">{p.desc}</p>
                         </div>
                         <div className="shrink-0 text-right">
-                          <p className="text-[14px] font-extrabold text-navy">{p.price}</p>
-                          {!isFree && (
+                          {isFree ? (
+                            <p className="text-[14px] font-extrabold text-navy">{p.price}</p>
+                          ) : (
                             <span
                               className={[
-                                "mt-1 inline-block rounded-full px-2.5 py-1 text-[11px] font-bold",
+                                "inline-block rounded-full px-2.5 py-1 text-[11px] font-bold",
                                 url ? "bg-navy text-white" : "bg-app-bg text-muted",
                               ].join(" ")}
                             >

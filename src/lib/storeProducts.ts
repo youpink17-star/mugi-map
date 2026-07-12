@@ -9,10 +9,9 @@ export type Tier = "free" | "entry" | "flagship" | "diagnosis" | "consulting";
 export interface StoreProduct {
   id: string;
   title: string;
-  price: string; // 표기용 (예: "149,000원")
+  price?: string; // 무료 상품에만 "무료"로 표기. 유료는 금액이 자주 바뀌어 비공개(보러가기/준비 중 배지로 대신)
   desc: string;
-  badge?: string; // "대표 상품" | "베타" 등
-  highlight?: boolean; // 이 층에서 가장 미는 상품 — 핑크로 강조
+  badge?: string; // 상품 형태 라벨 — "NOTION" | "전자책" 등
   envKey?: string; // 이 상품의 외부 링크 환경변수 이름
   defaultUrl?: string; // env 미설정 시 쓸 기본 링크(이미 라이브인 상품)
 }
@@ -49,8 +48,8 @@ export const STORE_TIERS: StoreTier[] = [
     label: "가볍게 입문하기",
     goal: "지금 바로 받아보는 무료 리포트로 먼저 감을 잡으세요",
     products: [
-      { id: "report-item", title: "사업 아이템 발굴 리포트", price: "자세히 보기", desc: "10문항으로 나에게 맞는 아이템 방향을 찾아드려요", envKey: "NEXT_PUBLIC_URL_REPORT_ITEM", defaultUrl: "https://funny-cactus-item.netlify.app/" },
-      { id: "report-marketing", title: "마케팅 전략 리포트", price: "자세히 보기", desc: "안 팔리는 이유와 나에게 맞는 방향을 알려드려요", envKey: "NEXT_PUBLIC_URL_REPORT_MARKETING", defaultUrl: "https://funny-cactus-25ffa8.netlify.app/" },
+      { id: "report-item", title: "사업 아이템 발굴 리포트", desc: "10문항으로 알아보는 나에게 맞는 아이템 방향", envKey: "NEXT_PUBLIC_URL_REPORT_ITEM", defaultUrl: "https://funny-cactus-item.netlify.app/" },
+      { id: "report-marketing", title: "마케팅 전략 리포트", desc: "안 팔리는 진짜 이유를 알려주는 마케팅 리포트", envKey: "NEXT_PUBLIC_URL_REPORT_MARKETING", defaultUrl: "https://funny-cactus-25ffa8.netlify.app/" },
     ],
   },
   {
@@ -59,9 +58,9 @@ export const STORE_TIERS: StoreTier[] = [
     label: "AI 콘텐츠 제조실",
     goal: "막힘 없이 콘텐츠와 마케팅을 계속 만들어내는 나만의 시스템",
     products: [
-      { id: "experiment-book", title: "48시간 안에 끝내는 AI 마케팅 실험북", price: "자세히 보기", desc: "가진 트래픽을 매출로 바꾸는 실험을 직접 해봐요", badge: "전자책", highlight: true, envKey: "NEXT_PUBLIC_URL_EXPERIMENT_BOOK" },
-      { id: "studio-full", title: "콘텐츠 제조실 (노션)", price: "자세히 보기", desc: "여러 채널 콘텐츠를 이 안에서 전부 찍어내드려요", badge: "NOTION", envKey: "NEXT_PUBLIC_URL_STUDIO_FULL" },
-      { id: "marketing-studio", title: "마케팅 제조실 (노션)", price: "자세히 보기", desc: "타겟부터 문구까지 마케팅을 직접 설계해드려요", badge: "NOTION", envKey: "NEXT_PUBLIC_URL_MARKETING_STUDIO" },
+      { id: "experiment-book", title: "48시간 안에 끝내는 AI 마케팅 실험북", desc: "가진 트래픽을 매출로 바꿔보는 48시간 실험북", badge: "전자책", envKey: "NEXT_PUBLIC_URL_EXPERIMENT_BOOK" },
+      { id: "studio-full", title: "콘텐츠 제조실 (노션)", desc: "여러 채널 콘텐츠를 한 번에 찍어내는 시스템", badge: "NOTION", envKey: "NEXT_PUBLIC_URL_STUDIO_FULL" },
+      { id: "marketing-studio", title: "마케팅 제조실 (노션)", desc: "타겟부터 문구까지 마케팅을 직접 설계하는 시스템", badge: "NOTION", envKey: "NEXT_PUBLIC_URL_MARKETING_STUDIO" },
     ],
   },
   {
@@ -70,8 +69,8 @@ export const STORE_TIERS: StoreTier[] = [
     label: "막힌 곳 빠르게 뚫기",
     goal: "혼자 안 풀리는 지점을 함께 뚫습니다",
     products: [
-      { id: "diag-1on1", title: "1:1 무기진단", price: "자세히 보기", desc: "내 강점과 상품을 함께 분석해 무기를 찾아드려요", envKey: "NEXT_PUBLIC_URL_DIAG_1ON1" },
-      { id: "content-room", title: "4주 콘텐츠 실행방", price: "자세히 보기", desc: "동료들과 함께 소통하며 콘텐츠를 완성해나가요", envKey: "NEXT_PUBLIC_URL_CONTENT_ROOM" },
+      { id: "diag-1on1", title: "1:1 무기진단", desc: "내 강점과 상품을 함께 뜯어보는 1:1 진단", envKey: "NEXT_PUBLIC_URL_DIAG_1ON1" },
+      { id: "content-room", title: "4주 콘텐츠 실행방", desc: "동료들과 소통하며 콘텐츠를 완성하는 4주 챌린지", envKey: "NEXT_PUBLIC_URL_CONTENT_ROOM" },
     ],
   },
   {
@@ -80,8 +79,8 @@ export const STORE_TIERS: StoreTier[] = [
     label: "맞춤형 전략 컨설팅",
     goal: "사업 마케팅 전략을 처음부터 다시 설계합니다",
     products: [
-      { id: "consult-funnel-strategy", title: "4주 마케팅 퍼널 구축 컨설팅", price: "자세히 보기", desc: "전체 마케팅 퍼널을 4주간 함께 설계해드려요", envKey: "NEXT_PUBLIC_URL_CONSULT_4W" },
-      { id: "consult-funnel-agency", title: "4주 마케팅 퍼널 구축 대행", price: "자세히 보기", desc: "전체 마케팅 퍼널을 4주간 대신 만들어드려요", envKey: "NEXT_PUBLIC_URL_CONSULT_8W" },
+      { id: "consult-funnel-strategy", title: "4주 마케팅 퍼널 구축 컨설팅", desc: "전체 마케팅 퍼널을 함께 설계하는 4주 컨설팅", envKey: "NEXT_PUBLIC_URL_CONSULT_4W" },
+      { id: "consult-funnel-agency", title: "4주 마케팅 퍼널 구축 대행", desc: "전체 마케팅 퍼널을 대신 만들어주는 4주 대행", envKey: "NEXT_PUBLIC_URL_CONSULT_8W" },
     ],
   },
 ];
