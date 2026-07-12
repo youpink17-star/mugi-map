@@ -30,6 +30,21 @@
         "3002"
       ],
       "port": 3002
+    },
+    {
+      "name": "dashboard-static",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\npx.cmd",
+      "runtimeArgs": ["--yes", "serve", "C:\\Users\\SKYPCPRO\\Downloads"],
+      "autoPort": true
+    },
+    {
+      "name": "sanghwangpan-react",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
+      "runtimeArgs": [
+        "C:\\Users\\SKYPCPRO\\Downloads\\사업상황판-소스코드\\node_modules\\vite\\bin\\vite.js",
+        "C:\\Users\\SKYPCPRO\\Downloads\\사업상황판-소스코드"
+      ],
+      "autoPort": true
     }
   ]
 }

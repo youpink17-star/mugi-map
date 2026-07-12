@@ -9,7 +9,7 @@ const TABS: { id: TabId; label: string; emoji: string; href: string }[] = [
   { id: "home", label: "홈", emoji: "🏠", href: "/" },
   { id: "wiki", label: "위키", emoji: "📓", href: "/wiki" },
   { id: "blanks", label: "빈칸", emoji: "🧩", href: "/wiki?view=blanks" },
-  { id: "tools", label: "도구실", emoji: "🧰", href: "/tools" },
+  { id: "tools", label: "무기상점", emoji: "🛒", href: "/tools" },
   { id: "notes", label: "노트", emoji: "🗒️", href: "/notes" },
 ];
 
@@ -24,10 +24,11 @@ export default function BottomTabs({
   return (
     <>
       <div className={`h-[76px] ${hide}`} />
+      {/* 바탕(흰 배경)만 화면 끝까지 이어지고, 탭 내용은 본문과 같은 폭으로 가운데 정렬 */}
       <nav
-        className={`fixed bottom-0 left-1/2 z-40 w-full max-w-app -translate-x-1/2 border-t border-line bg-white/95 pb-[max(env(safe-area-inset-bottom),0px)] backdrop-blur ${hide}`}
+        className={`fixed inset-x-0 bottom-0 z-40 w-full border-t border-line bg-white/95 pb-[max(env(safe-area-inset-bottom),0px)] backdrop-blur ${hide}`}
       >
-        <div className="grid grid-cols-5">
+        <div className="mx-auto grid max-w-2xl grid-cols-5">
           {TABS.map((t) => {
             const on = t.id === active;
             return (

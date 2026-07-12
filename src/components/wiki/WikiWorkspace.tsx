@@ -24,10 +24,12 @@ import {
   todaysBlanks,
   emptiestSection,
   type BusinessWiki,
+  type WikiMetaPatch,
 } from "@/lib/wikiStore";
 import WikiSectionEditor from "./WikiSectionEditor";
 import WikiDocument from "./WikiDocument";
 import WikiJourney from "./WikiJourney";
+import UpsellCard from "../UpsellCard";
 
 const TOP_LEVEL = WIKI_SECTIONS.filter((s) => !s.parentId);
 const FUNNEL_CHILDREN = WIKI_SECTIONS.filter((s) => s.parentId === "funnel");
@@ -50,9 +52,18 @@ export default function WikiWorkspace() {
   const [mode, setMode] = useState<WikiMode>("edit"); // 편집 / 정리본 / 빈칸
   const searchParams = useSearchParams();
 
+  const [saveFailed, setSaveFailed] = useState(false);
+
   // 최초 로드 (한 번)
   useEffect(() => {
     setWiki(getOrCreateWiki());
+  }, []);
+
+  // 저장 실패(용량 초과·프라이빗 모드) 감지 → 토스트
+  useEffect(() => {
+    const onFail = () => setSaveFailed(true);
+    window.addEventListener("wiki:save-failed", onFail);
+    return () => window.removeEventListener("wiki:save-failed", onFail);
   }, []);
 
   // URL 쿼리 변화에 반응 — 같은 /wiki 라우트에서 탭(?view=blanks 등) 이동해도 모드 전환
@@ -99,7 +110,7 @@ export default function WikiWorkspace() {
     setWiki((prev) => (prev ? updateSection(prev, id, { content: text }) : prev));
   const status = (id: string, st: SectionStatus) =>
     setWiki((prev) => (prev ? updateSection(prev, id, { status: st }) : prev));
-  const meta = (patch: Partial<BusinessWiki>) =>
+  const meta = (patch: WikiMetaPatch) =>
     setWiki((prev) => (prev ? setMeta(prev, patch) : prev));
 
   const rate = completionRate(wiki);
@@ -173,6 +184,14 @@ export default function WikiWorkspace() {
 
   return (
     <>
+      {/* 저장 실패 토스트 (용량 초과·프라이빗 모드) */}
+      {saveFailed && (
+        <div className="fixed inset-x-0 top-3 z-50 mx-auto w-fit max-w-[90%] rounded-xl bg-navy px-4 py-2.5 text-center text-[13px] font-semibold text-white shadow-card">
+          저장 공간이 가득 찼어요. 오래된 노트를 지우거나 브라우저 설정을 확인해 주세요.
+          <button onClick={() => setSaveFailed(false)} className="ml-2 font-bold text-pink">닫기</button>
+        </div>
+      )}
+
       {/* ===== 모바일 레이아웃 (가볍게 채우는 위키 앱) — 폰만 ===== */}
       <div className="mx-auto w-full max-w-app px-4 pb-2 md:hidden">
         <InfoBox wiki={wiki} rate={rate} emptiest={emptiest} onMeta={meta} />
@@ -183,7 +202,7 @@ export default function WikiWorkspace() {
           📄 내 사업 정리본 보기
         </button>
         <TodayBlanks blanks={blanks} onPick={(id) => setExpandedId(id)} />
-        <div className="mt-5 space-y-2.5 pb-4">
+        <div className="mt-5 space-y-2.5">
           {TOP_LEVEL.map((def) => (
             <MobileSection
               key={def.id}
@@ -195,10 +214,14 @@ export default function WikiWorkspace() {
             />
           ))}
         </div>
+        {/* 실제 매출 전환 업셀 (제조실 / 1:1 컨설팅) */}
+        <div className="mt-5 pb-4">
+          <UpsellCard />
+        </div>
       </div>
 
       {/* ===== 데스크톱/태블릿 레이아웃 (풀높이 문서 작업실) — md(768)+ ===== */}
-      <div className="hidden w-full md:flex md:min-h-[calc(100dvh-4rem)]">
+      <div className="hidden w-full md:flex md:min-h-[calc(100dvh-4rem-76px)]">
         {/* 왼쪽: 사업 정체성 + 위키 목차 (풀높이 사이드바) */}
         <aside className="flex w-64 shrink-0 flex-col border-r border-line bg-white">
           <DeskSidebarHeader
@@ -693,17 +716,8 @@ function RightRail({ wiki, onPick }: { wiki: BusinessWiki; onPick: (id: string) 
         </Link>
       </div>
 
-      {/* 추후 아임웹 상품 추천 CTA (구조만) */}
-      <div className="rounded-2xl border border-dashed border-purple/30 bg-soft-pink p-4">
-        <p className="text-[11px] font-bold text-purple">더 깊이 채우고 싶다면</p>
-        <p className="mt-1 text-[13.5px] font-extrabold text-ink">내 사업 위키 완성 코스</p>
-        <p className="mt-0.5 text-[12px] leading-relaxed text-muted">
-          섹션별 AI 초안·랜딩 구조·CRM 문구까지. 곧 열립니다.
-        </p>
-        <p className="mt-3 inline-block rounded-xl border border-dashed border-line bg-white px-3.5 py-2 text-[12px] font-bold text-muted">
-          준비 중
-        </p>
-      </div>
+      {/* 실제 매출 전환 업셀 (제조실 / 1:1 컨설팅) */}
+      <UpsellCard />
     </div>
   );
 }

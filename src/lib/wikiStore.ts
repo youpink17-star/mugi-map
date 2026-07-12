@@ -81,35 +81,120 @@ export function createWiki(partial?: Partial<BusinessWiki>): BusinessWiki {
   };
 }
 
-// ---------- load / save ----------
-export function loadWiki(): BusinessWiki | null {
-  if (typeof window === "undefined") return null;
+// ---------- 런타임 검증(손상/조작 데이터 방어) ----------
+const SECTION_STATUSES: SectionStatus[] = ["empty", "draft", "needs_update", "complete"];
+const SELLING_STATUSES: SellingStatus[] = ["none", "selling"];
+const STR_MAX = 5000; // 필드별 길이 상한(렌더 지연·quota 방지)
+
+function str(v: unknown, max = STR_MAX): string {
+  return typeof v === "string" ? v.slice(0, max) : "";
+}
+function normalizeStatus(v: unknown): SectionStatus {
+  return SECTION_STATUSES.includes(v as SectionStatus) ? (v as SectionStatus) : "empty";
+}
+function normalizeSection(v: unknown): WikiSectionState {
+  const s = v && typeof v === "object" ? (v as Partial<WikiSectionState>) : {};
+  return {
+    status: normalizeStatus(s.status),
+    content: str(s.content),
+    lastUpdatedAt: typeof s.lastUpdatedAt === "string" ? s.lastUpdatedAt : null,
+  };
+}
+function normalizeNote(v: unknown): WikiNote {
+  const n = v && typeof v === "object" ? (v as Partial<WikiNote>) : {};
+  return {
+    id: str(n.id, 60) || uid("note"),
+    discomfort: str(n.discomfort),
+    who: str(n.who),
+    when: str(n.when),
+    existing: str(n.existing),
+    whyUnsatisfied: str(n.whyUnsatisfied),
+    myIdea: str(n.myIdea),
+    turnedIntoIdea: n.turnedIntoIdea === true,
+    createdAt: typeof n.createdAt === "string" ? n.createdAt : nowISO(),
+  };
+}
+
+// 어떤 형태가 와도 안전한 BusinessWiki 로 복구
+function parseWiki(raw: string): BusinessWiki | null {
+  let obj: unknown;
   try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return null;
-    const w = JSON.parse(raw) as BusinessWiki;
-    // 섹션 정의가 늘어났을 때를 대비해 누락 섹션 보강
-    const base = emptySections();
-    w.sections = { ...base, ...w.sections };
-    // 과거 저장값(unknown/coaching 등) 정규화
-    w.businessType = normalizeBusinessType(w.businessType);
-    if (!Array.isArray(w.notes)) w.notes = [];
-    return w;
+    obj = JSON.parse(raw);
   } catch {
     return null;
   }
+  if (!obj || typeof obj !== "object") return null;
+  const w = obj as Partial<BusinessWiki>;
+
+  const base = emptySections();
+  const secIn = w.sections && typeof w.sections === "object" ? w.sections : {};
+  const sections: Record<string, WikiSectionState> = { ...base };
+  for (const id of Object.keys(base)) {
+    if (id in secIn) sections[id] = normalizeSection((secIn as Record<string, unknown>)[id]);
+  }
+
+  const t = nowISO();
+  return {
+    id: str(w.id, 60) || uid("wiki"),
+    anonymousId: str(w.anonymousId, 60) || uid("anon"),
+    title: str(w.title, 120) || "내 사업",
+    sellingStatus: SELLING_STATUSES.includes(w.sellingStatus as SellingStatus)
+      ? (w.sellingStatus as SellingStatus)
+      : "none",
+    businessType: normalizeBusinessType(w.businessType),
+    startedAt: typeof w.startedAt === "string" ? w.startedAt : undefined,
+    sections,
+    notes: Array.isArray(w.notes) ? w.notes.map(normalizeNote) : [],
+    createdAt: typeof w.createdAt === "string" ? w.createdAt : t,
+    updatedAt: typeof w.updatedAt === "string" ? w.updatedAt : t,
+  };
 }
 
-export function saveWiki(w: BusinessWiki): BusinessWiki {
-  if (typeof window === "undefined") return w;
-  w.updatedAt = nowISO();
-  try {
-    localStorage.setItem(KEY, JSON.stringify(w));
-    // [확장] Supabase 연결 시: 여기서 business_wiki upsert(anonymousId 기준) 호출
-  } catch {
-    /* quota 등 무시 */
+// ---------- load / save ----------
+export function loadWiki(): BusinessWiki | null {
+  if (typeof window === "undefined") return null;
+  const raw = localStorage.getItem(KEY);
+  if (!raw) return null;
+  const parsed = parseWiki(raw);
+  if (!parsed) return null;
+  // 손상/구버전 데이터를 읽었으면 정규화된 값으로 되써서 자가 복구(self-heal)
+  if (parsed !== null && raw !== JSON.stringify(parsed)) {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(parsed));
+    } catch {
+      /* ignore */
+    }
   }
-  return w;
+  return parsed;
+}
+
+export type SaveResult =
+  | { ok: true; wiki: BusinessWiki }
+  | { ok: false; error: string; wiki: BusinessWiki };
+
+// 저장 결과를 알려주는 버전(호출자가 실패를 처리할 수 있게)
+export function saveWikiSafe(w: BusinessWiki): SaveResult {
+  const next = { ...w, updatedAt: nowISO() };
+  if (typeof window === "undefined") return { ok: true, wiki: next };
+  try {
+    localStorage.setItem(KEY, JSON.stringify(next));
+    // [확장] Supabase 연결 시: 여기서 business_wiki upsert(anonymousId 기준) 호출
+    return { ok: true, wiki: next };
+  } catch (e) {
+    // 저장 실패(용량 초과·프라이빗 모드 등) → 콘솔 + 이벤트로 알림
+    console.warn("[wiki] 저장 실패:", e);
+    try {
+      window.dispatchEvent(new CustomEvent("wiki:save-failed"));
+    } catch {
+      /* ignore */
+    }
+    return { ok: false, error: String(e), wiki: next };
+  }
+}
+
+// 기존 호출부 호환용: 저장하고 새 객체만 반환(실패해도 객체는 갱신됨)
+export function saveWiki(w: BusinessWiki): BusinessWiki {
+  return saveWikiSafe(w).wiki;
 }
 
 export function getOrCreateWiki(): BusinessWiki {
@@ -137,7 +222,12 @@ export function updateSection(
   return saveWiki(next);
 }
 
-export function setMeta(w: BusinessWiki, patch: Partial<BusinessWiki>): BusinessWiki {
+// 메타 필드만 안전하게 갱신 (sections/notes/id 등 덮어쓰기 차단)
+export type WikiMetaPatch = Partial<
+  Pick<BusinessWiki, "title" | "sellingStatus" | "businessType" | "startedAt">
+>;
+
+export function setMeta(w: BusinessWiki, patch: WikiMetaPatch): BusinessWiki {
   return saveWiki({ ...w, ...patch });
 }
 

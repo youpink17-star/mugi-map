@@ -43,7 +43,7 @@ export default function WikiNotes({
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-[11px] font-bold text-purple">아이디어 노트</p>
-          <h2 className="text-[20px] font-extrabold leading-tight text-ink lg:text-[24px]">
+          <h2 className="text-[20px] font-extrabold leading-tight text-ink md:text-[24px]">
             불편함 노트
           </h2>
           <p className="mt-1 text-[13px] leading-relaxed text-muted">
@@ -73,6 +73,7 @@ export default function WikiNotes({
                     onChange={(e) => setForm((s) => ({ ...s, [f.key]: e.target.value }))}
                     placeholder={f.ph}
                     rows={2}
+                    maxLength={1000}
                     className="w-full resize-y rounded-xl border border-line bg-white p-3 text-[14px] text-ink outline-none placeholder:text-muted/70 focus:border-pink"
                   />
                 ) : (
@@ -80,6 +81,7 @@ export default function WikiNotes({
                     value={form[f.key]}
                     onChange={(e) => setForm((s) => ({ ...s, [f.key]: e.target.value }))}
                     placeholder={f.ph}
+                    maxLength={300}
                     className="w-full rounded-xl border border-line bg-white p-3 text-[14px] text-ink outline-none placeholder:text-muted/70 focus:border-pink"
                   />
                 )}
@@ -129,7 +131,7 @@ export default function WikiNotes({
       <div className="mt-6 rounded-2xl border border-purple/20 bg-soft-pink/50 p-5">
         <p className="text-[12px] font-bold text-purple">불편함으로 만들 수 있는 사업 아이템</p>
         <p className="mt-0.5 text-[13px] text-muted">하나의 불편함도 여러 갈래로 풀 수 있어요.</p>
-        <div className="mt-4 space-y-3">
+        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
           {IDEA_PATHS.map((p) => (
             <div key={p.title} className="rounded-2xl border border-line bg-white p-4">
               <div className="flex items-center gap-2.5">

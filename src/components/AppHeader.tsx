@@ -15,7 +15,8 @@ export default function AppHeader({
 
   return (
     <header className="sticky top-0 z-30 h-16 border-b border-line bg-white/90 backdrop-blur">
-      <div className="flex h-16 items-center px-5">
+      {/* 바탕은 화면 끝까지, 내용물(로고·메뉴)은 본문과 같은 폭으로 가운데 정렬 */}
+      <div className="relative mx-auto flex h-16 max-w-2xl items-center px-5">
         {showBack ? (
           <button
             aria-label="뒤로"
@@ -46,16 +47,17 @@ export default function AppHeader({
             <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           </svg>
         </button>
-      </div>
 
-      {open && (
-        <div className="absolute right-3 top-16 w-44 overflow-hidden rounded-xl border border-line bg-white py-1 shadow-card">
-          <MenuLink href="/" onClick={() => setOpen(false)}>홈</MenuLink>
-          <MenuLink href="/wiki" onClick={() => setOpen(false)}>내 사업 위키</MenuLink>
-          <MenuLink href="/diagnosis" onClick={() => setOpen(false)}>무기진단</MenuLink>
-          <MenuLink href="/tools" onClick={() => setOpen(false)}>도구실</MenuLink>
-        </div>
-      )}
+        {open && (
+          <div className="absolute right-5 top-16 w-44 overflow-hidden rounded-xl border border-line bg-white py-1 shadow-card">
+            <MenuLink href="/" onClick={() => setOpen(false)}>홈</MenuLink>
+            <MenuLink href="/wiki" onClick={() => setOpen(false)}>내 사업 위키</MenuLink>
+            <MenuLink href="/diagnosis" onClick={() => setOpen(false)}>무기진단</MenuLink>
+            <MenuLink href="/tools" onClick={() => setOpen(false)}>무기상점</MenuLink>
+            <MenuLink href="/notes" onClick={() => setOpen(false)}>아이디어 노트</MenuLink>
+          </div>
+        )}
+      </div>
     </header>
   );
 }

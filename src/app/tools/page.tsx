@@ -1,80 +1,123 @@
 import AppHeader from "@/components/AppHeader";
 import BottomTabs from "@/components/BottomTabs";
 import Link from "next/link";
+import { STORE_TIERS } from "@/lib/storeProducts";
 
-// 콘텐츠 제조실은 별도의 독립 사이트. 배포 URL을 환경변수로 연결한다.
-const CONTENT_STUDIO_URL =
-  process.env.NEXT_PUBLIC_CONTENT_STUDIO_URL || "http://localhost:3001";
-
-// 도구실 — 나머지는 준비 중 placeholder. 위키가 본체.
-const TOOLS = [
-  { emoji: "🔬", title: "레퍼런스 연구소", desc: "잘 팔린 사례를 저장하고 + 내 사업에 맞게 바꿔 쓰는 공간" },
-  { emoji: "💬", title: "고객 문구함", desc: "문의 답변, 협업 제안, 체험단 요청 등 상황에 맞는 문구를 바로 꺼내 쓰는 공간" },
-  { emoji: "📊", title: "사업 상황판", desc: "방문자, 문의, 판매, 콘텐츠 반응을 한눈에 확인하는 공간" },
-  { emoji: "📡", title: "고객 레이더", desc: "고객이 요즘 뭘 검색하고, 어떤 고민이 있는지 조사하는 공간" },
-];
+// 외부 판매 URL은 서버에서 env로 해석 (없으면 "준비 중")
+// process.env를 클라이언트에서 동적 조회하면 정적 치환이 안 되므로 서버 컴포넌트에서 처리.
+function resolveUrl(envKey?: string, defaultUrl?: string): string | undefined {
+  if (envKey) {
+    const v = process.env[envKey as keyof NodeJS.ProcessEnv];
+    if (typeof v === "string" && v.length > 0) return v;
+  }
+  return defaultUrl || undefined;
+}
 
 export default function ToolsPage() {
   return (
     <>
-      <AppHeader title="도구실" />
-      <main className="mx-auto w-full max-w-app flex-1 px-4 pb-6 lg:max-w-[760px]">
-        <section className="mt-5 rounded-3xl bg-navy p-6 text-white">
-          <p className="text-[12px] font-bold text-pink">도구실</p>
-          <h1 className="mt-1.5 text-[20px] font-extrabold leading-snug">
-            1인 사장님들을 위해 만들었습니다
+      <AppHeader />
+      <main className="mx-auto w-full max-w-app flex-1 px-4 pb-6 md:max-w-2xl md:px-6 lg:max-w-[760px]">
+        {/* 인트로 */}
+        <section className="mt-5 rounded-3xl bg-navy p-6 text-white md:p-8">
+          <p className="text-[12px] font-bold text-pink">무기상점</p>
+          <h1 className="mt-1.5 text-[20px] font-extrabold leading-snug md:text-[26px]">
+            내 무기를 실제 매출로
           </h1>
-          <p className="mt-2 text-[13px] leading-relaxed text-white/70">
-            혼자 다 짊어지지 말고 필요할 때 꺼내 쓰세요. 내 사업 위키에 적은 내용을 바탕으로 SNS 콘텐츠, 고객 전송용 메시지, 참고하기 좋은 사례까지 바로 확인할 수 있습니다.
+          <p className="mt-2 text-[13px] leading-relaxed text-white/70 md:text-[14px]">
+            무료로 내 무기를 찾고, 필요할 때 한 단계씩 올라가세요. 대표 상품
+            <b className="text-white"> 노션 콘텐츠 제조실</b>은 위키에 채운 걸 실제
+            콘텐츠로 계속 찍어냅니다.
           </p>
           <Link
             href="/wiki"
             className="mt-4 inline-block rounded-xl bg-pink-grad px-4 py-2.5 text-[14px] font-extrabold text-white shadow-cta"
           >
-            내 사업 위키로 가기 →
+            먼저 내 사업 위키 채우기 →
           </Link>
         </section>
 
-        {/* 콘텐츠 제조실 — 별도 사이트로 이동 */}
-        <a
-          href={CONTENT_STUDIO_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-5 flex items-center gap-3 rounded-2xl border border-pink/30 bg-soft-pink p-4 shadow-card transition active:scale-[0.99]"
-        >
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white text-[22px]">
-            ✍️
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="text-[14.5px] font-extrabold text-ink">콘텐츠 제조실</p>
-            <p className="mt-0.5 text-[12.5px] leading-relaxed text-muted">
-              오늘 올릴 콘텐츠 제목, 후킹, 본문, CTA를 바로 만드는 공간
-            </p>
-          </div>
-          <span className="shrink-0 rounded-full bg-pink px-2.5 py-1 text-[11px] font-bold text-white">
-            바로가기 ↗
-          </span>
-        </a>
+        {/* A~E 상품군 계단 */}
+        <div className="mt-6 space-y-7">
+          {STORE_TIERS.map((tier) => {
+            const flagship = tier.tier === "flagship";
+            return (
+              <section key={tier.tier}>
+                <div className="mb-2.5 flex items-baseline gap-2">
+                  <span className="text-[18px]">{tier.emoji}</span>
+                  <h2 className="text-[16px] font-extrabold text-ink">{tier.label}</h2>
+                </div>
+                <p className="mb-3 text-[12.5px] leading-relaxed text-muted">{tier.goal}</p>
 
-        <div className="mt-3 space-y-3">
-          {TOOLS.map((t) => (
-            <div
-              key={t.title}
-              className="flex items-center gap-3 rounded-2xl border border-dashed border-line bg-white p-4"
-            >
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-app-bg text-[22px]">
-                {t.emoji}
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="text-[14.5px] font-extrabold text-ink">{t.title}</p>
-                <p className="mt-0.5 text-[12.5px] leading-relaxed text-muted">{t.desc}</p>
-              </div>
-              <span className="shrink-0 rounded-full bg-app-bg px-2.5 py-1 text-[11px] font-bold text-muted">
-                준비 중
-              </span>
-            </div>
-          ))}
+                <div className="grid grid-cols-1 gap-2.5 md:grid-cols-2">
+                  {tier.products.map((p) => {
+                    const url = resolveUrl(p.envKey, p.defaultUrl);
+                    const isFree = tier.tier === "free";
+                    const inner = (
+                      <div
+                        className={[
+                          "flex items-center gap-3 rounded-2xl border p-4 transition",
+                          flagship
+                            ? "border-pink/40 bg-soft-pink shadow-card"
+                            : "border-line bg-white",
+                          url ? "active:scale-[0.99] hover:border-pink" : "",
+                        ].join(" ")}
+                      >
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            <p className="text-[14.5px] font-extrabold text-ink">{p.title}</p>
+                            {p.badge && (
+                              <span className="rounded-full bg-pink px-2 py-0.5 text-[10px] font-extrabold text-white">
+                                {p.badge}
+                              </span>
+                            )}
+                          </div>
+                          <p className="mt-0.5 text-[12.5px] leading-relaxed text-muted">{p.desc}</p>
+                        </div>
+                        <div className="shrink-0 text-right">
+                          <p className="text-[14px] font-extrabold text-navy">{p.price}</p>
+                          {!isFree && (
+                            <span
+                              className={[
+                                "mt-1 inline-block rounded-full px-2.5 py-1 text-[11px] font-bold",
+                                url ? "bg-navy text-white" : "bg-app-bg text-muted",
+                              ].join(" ")}
+                            >
+                              {url ? "보러가기 ↗" : "준비 중"}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+
+                    // 무료 상품은 내부 링크, 유료는 외부(있을 때만)
+                    if (isFree) {
+                      const href =
+                        p.id === "free-wiki" ? "/wiki" : p.id === "free-diagnosis" ? "/" : "/wiki";
+                      return (
+                        <Link key={p.id} href={href} className="block">
+                          {inner}
+                        </Link>
+                      );
+                    }
+                    if (url) {
+                      return (
+                        <a key={p.id} href={url} target="_blank" rel="noopener noreferrer" className="block">
+                          {inner}
+                        </a>
+                      );
+                    }
+                    return <div key={p.id}>{inner}</div>;
+                  })}
+                </div>
+              </section>
+            );
+          })}
         </div>
+
+        <p className="mt-8 text-center text-[11px] leading-relaxed text-muted">
+          가격·구성은 변경될 수 있어요. 결제는 각 상품 페이지에서 진행됩니다.
+        </p>
       </main>
       <BottomTabs active="tools" />
     </>

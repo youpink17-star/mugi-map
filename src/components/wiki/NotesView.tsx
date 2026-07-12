@@ -26,7 +26,7 @@ export default function NotesView() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-app px-4 py-5">
+    <div className="mx-auto w-full max-w-app px-4 py-5 md:max-w-2xl md:px-6 md:py-9 lg:max-w-3xl">
       <WikiNotes
         wiki={wiki}
         onAdd={(n) => setWiki((p) => (p ? addNote(p, n) : p))}

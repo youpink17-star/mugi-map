@@ -6,15 +6,15 @@ import { DIAGNOSIS_URL } from "@/lib/links";
 export default function DiagnosisPage() {
   return (
     <>
-      <AppHeader title="무기진단" />
-      <main className="mx-auto w-full max-w-app flex-1 px-4 pb-2">
-        <section className="mt-4 rounded-3xl bg-navy p-6 text-white">
+      <AppHeader />
+      <main className="mx-auto w-full max-w-app flex-1 px-4 pb-2 md:max-w-xl md:px-6 lg:max-w-2xl">
+        <section className="mt-4 rounded-3xl bg-navy p-6 text-white md:p-8">
           <p className="text-[12px] font-bold text-pink">무기진단</p>
-          <h1 className="mt-1.5 text-[21px] font-extrabold leading-snug">
+          <h1 className="mt-1.5 text-[21px] font-extrabold leading-snug md:text-[28px]">
             막막할 땐,
             <br />진단으로 시작하세요
           </h1>
-          <p className="mt-2 text-[13px] leading-relaxed text-white/70">
+          <p className="mt-2 text-[13px] leading-relaxed text-white/70 md:text-[14px]">
             내 강점·상품·타겟·콘텐츠 방향을 잡아주는 무료 진단이 별도 앱으로 열립니다. 결과는 다시 이 지도로 옮겨 정리하세요.
           </p>
           <a
@@ -27,7 +27,7 @@ export default function DiagnosisPage() {
           </a>
         </section>
 
-        <section className="mt-5 rounded-2xl border border-line bg-white p-5">
+        <section className="mt-5 rounded-2xl border border-line bg-white p-5 md:p-6">
           <p className="text-[13px] font-bold text-ink">진단은 왜 따로 있나요?</p>
           <p className="mt-1.5 text-[13px] leading-relaxed text-muted">
             진단은 사업 지도의 빈칸을 채우는 <b className="text-ink">입력 도구</b>예요. 가볍게 받아보고, 마음에 드는 결과만 골라

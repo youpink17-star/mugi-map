@@ -5,7 +5,7 @@ import NotesView from "@/components/wiki/NotesView";
 export default function NotesPage() {
   return (
     <>
-      <AppHeader title="아이디어 노트" />
+      <AppHeader />
       <main className="flex-1">
         <NotesView />
       </main>
