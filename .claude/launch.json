@@ -25,16 +25,26 @@
       "runtimeArgs": [
         "C:\\Users\\SKYPCPRO\\Desktop\\무기진단\\node_modules\\next\\dist\\bin\\next",
         "dev",
-        "C:\\Users\\SKYPCPRO\\Desktop\\무기진단",
-        "-p",
-        "3002"
+        "C:\\Users\\SKYPCPRO\\Desktop\\무기진단"
       ],
-      "port": 3002
+      "autoPort": true
     },
     {
       "name": "dashboard-static",
       "runtimeExecutable": "C:\\Program Files\\nodejs\\npx.cmd",
       "runtimeArgs": ["--yes", "serve", "C:\\Users\\SKYPCPRO\\Downloads"],
+      "autoPort": true
+    },
+    {
+      "name": "cactus-marketing",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\npx.cmd",
+      "runtimeArgs": ["--yes", "serve", "C:\\Users\\SKYPCPRO\\Downloads\\funny-cactus-FULL-restore"],
+      "autoPort": true
+    },
+    {
+      "name": "cactus-item",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\npx.cmd",
+      "runtimeArgs": ["--yes", "serve", "C:\\Users\\SKYPCPRO\\Downloads\\funny-cactus-item (9)"],
       "autoPort": true
     },
     {

@@ -315,3 +315,10 @@ export function clearWiki() {
   if (typeof window === "undefined") return;
   localStorage.removeItem(KEY);
 }
+
+// ---------- 복구 링크로 받아온 백업 데이터 적용 ----------
+// 서버에서 온 데이터도 loadWiki()와 동일한 정규화(parseWiki)를 거쳐 안전하게 저장한다.
+export function restoreFromBackup(data: unknown): BusinessWiki {
+  const parsed = parseWiki(JSON.stringify(data)) ?? createWiki();
+  return saveWiki(parsed);
+}

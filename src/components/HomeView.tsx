@@ -331,6 +331,25 @@ export default function HomeView() {
 
       <footer className="mx-auto mt-10 w-full max-w-2xl border-t border-line px-5 py-6 text-center text-[12px] text-muted md:max-w-3xl md:px-10">
         <b className="text-ink">무기제작소</b> · 1인사업가의 사업을 위키처럼 정리하는 작업실
+        <div className="mt-3 flex items-center justify-center gap-3">
+          <a
+            href="https://www.instagram.com/mugi_maker/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[12px] font-semibold text-muted transition hover:text-pink"
+          >
+            인스타그램
+          </a>
+          <span className="text-line">·</span>
+          <a
+            href="https://www.youtube.com/@mugi_maker"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[12px] font-semibold text-muted transition hover:text-pink"
+          >
+            유튜브
+          </a>
+        </div>
       </footer>
 
       <BottomTabs active="home" />

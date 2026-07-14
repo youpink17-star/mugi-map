@@ -28,7 +28,9 @@ import {
 import WikiSectionEditor from "./WikiSectionEditor";
 import WikiDocument from "./WikiDocument";
 import WikiJourney from "./WikiJourney";
+import WikiBackupLink from "./WikiBackupLink";
 import UpsellCard from "../UpsellCard";
+import { getBackupCode, syncWikiBackup } from "@/lib/wikiBackupClient";
 
 const TOP_LEVEL = WIKI_SECTIONS.filter((s) => !s.parentId);
 const FUNNEL_CHILDREN = WIKI_SECTIONS.filter((s) => s.parentId === "funnel");
@@ -65,6 +67,16 @@ export default function WikiWorkspace() {
     window.addEventListener("wiki:save-failed", onFail);
     return () => window.removeEventListener("wiki:save-failed", onFail);
   }, []);
+
+  // 복구 링크를 이미 만들어둔 경우에만, 위키가 바뀔 때마다 조용히 재백업(디바운스)
+  useEffect(() => {
+    if (!wiki) return;
+    if (!getBackupCode()) return;
+    const t = window.setTimeout(() => {
+      syncWikiBackup(wiki);
+    }, 2500);
+    return () => window.clearTimeout(t);
+  }, [wiki]);
 
   // URL 쿼리 변화에 반응 — 같은 /wiki 라우트에서 탭(?view=blanks 등) 이동해도 모드 전환
   useEffect(() => {
@@ -216,8 +228,12 @@ export default function WikiWorkspace() {
             />
           ))}
         </div>
+        <div className="mt-5">
+          <WikiBackupLink />
+        </div>
+
         {/* 실제 매출 전환 업셀 (제조실 / 1:1 컨설팅) */}
-        <div className="mt-5 pb-4">
+        <div className="mt-3 pb-4">
           <UpsellCard />
         </div>
       </div>
@@ -703,6 +719,8 @@ function RightRail({ wiki, onPick }: { wiki: BusinessWiki; onPick: (id: string) 
           </ul>
         )}
       </div>
+
+      <WikiBackupLink />
 
       {/* 실제 매출 전환 업셀 (제조실 / 1:1 컨설팅) — 아래 무기상점 카드와 중복이라 "관련 도구" 섹션은 제거 */}
       <UpsellCard />
