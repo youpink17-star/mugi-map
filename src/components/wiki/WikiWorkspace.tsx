@@ -1,6 +1,5 @@
 "use client";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import {
   WIKI_SECTIONS,
@@ -51,6 +50,7 @@ export default function WikiWorkspace() {
   const [expandedId, setExpandedId] = useState<string | null>(null); // 모바일 아코디언
   const [mode, setMode] = useState<WikiMode>("edit"); // 편집 / 정리본 / 빈칸
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const [saveFailed, setSaveFailed] = useState(false);
 
@@ -147,9 +147,11 @@ export default function WikiWorkspace() {
     pick(id);
   }
 
+  // 빈칸(여정) 모드에서 카테고리를 고르면 실제 URL 히스토리를 남겨서,
+  // 브라우저 뒤로가기를 누르면 다시 빈칸 화면(?view=blanks)으로 돌아갈 수 있게 한다.
+  // (기존엔 로컬 state만 바꿔서 히스토리에 안 남고, 뒤로가기가 /wiki 이전 페이지로 튀었음)
   function editFromJourney(id: string) {
-    setMode("edit");
-    pick(id);
+    router.push(`/wiki?section=${id}`);
   }
 
   // ===== 정리본(읽기) 모드 — 채운 칸을 한 장으로 =====
@@ -702,21 +704,7 @@ function RightRail({ wiki, onPick }: { wiki: BusinessWiki; onPick: (id: string) 
         )}
       </div>
 
-      {/* 관련 도구 (도구실) */}
-      <div className="rounded-2xl border border-line bg-white p-4">
-        <p className="text-[12px] font-extrabold text-ink">관련 도구</p>
-        <p className="mt-1 text-[13px] leading-relaxed text-muted">
-          위키가 채워지면 콘텐츠·문구 도구가 열립니다.
-        </p>
-        <Link
-          href="/tools"
-          className="mt-3 inline-block rounded-xl border border-line bg-app-bg px-3.5 py-2 text-[13px] font-bold text-ink"
-        >
-          도구실 보기 →
-        </Link>
-      </div>
-
-      {/* 실제 매출 전환 업셀 (제조실 / 1:1 컨설팅) */}
+      {/* 실제 매출 전환 업셀 (제조실 / 1:1 컨설팅) — 아래 무기상점 카드와 중복이라 "관련 도구" 섹션은 제거 */}
       <UpsellCard />
     </div>
   );

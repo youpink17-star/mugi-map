@@ -69,7 +69,7 @@ export const STORE_TIERS: StoreTier[] = [
     label: "막힌 곳 빠르게 뚫기",
     goal: "혼자 안 풀리는 지점을 함께 뚫습니다",
     products: [
-      { id: "diag-1on1", title: "1:1 무기진단", desc: "내 강점과 상품을 함께 뜯어보는 1:1 진단", envKey: "NEXT_PUBLIC_URL_DIAG_1ON1" },
+      { id: "diag-1on1", title: "마케팅 제조실", desc: "내 강점과 상품을 함께 뜯어보는 1:1 진단", envKey: "NEXT_PUBLIC_URL_DIAG_1ON1" },
       { id: "content-room", title: "4주 콘텐츠 실행방", desc: "동료들과 소통하며 콘텐츠를 완성하는 4주 챌린지", envKey: "NEXT_PUBLIC_URL_CONTENT_ROOM" },
     ],
   },
@@ -123,7 +123,7 @@ export const UPSELL_STUDIO = {
   envKey: "NEXT_PUBLIC_URL_STUDIO_FULL",
 };
 export const UPSELL_CONSULT = {
-  title: "1:1 무기진단",
+  title: "마케팅 제조실",
   desc: "혼자 안 풀리는 지점을 전문가와 1:1로",
   envKey: "NEXT_PUBLIC_URL_DIAG_1ON1",
 };

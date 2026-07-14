@@ -3,13 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import {
   STATUS_META,
   generateExample,
-  getTestsForSection,
   getStoreRecommendation,
   type WikiSectionDef,
   type SectionStatus,
   type ExampleContext,
 } from "@/lib/wiki";
-import { DIAGNOSIS_URL, DIAGNOSIS_INFO } from "@/lib/links";
 import type { WikiSectionState } from "@/lib/wikiStore";
 
 const STATUS_CYCLE: SectionStatus[] = ["empty", "draft", "needs_update", "complete"];
@@ -42,7 +40,6 @@ export default function WikiSectionEditor({
   }, [autoFocus, def.id]);
 
   const status = state.status;
-  const relatedSlugs = getTestsForSection(def.id);
   const rec = getStoreRecommendation(def.id, status);
 
   const dirty = text !== state.content;
@@ -208,41 +205,6 @@ export default function WikiSectionEditor({
               이 형식으로 내 칸 시작하기 →
             </button>
           )}
-        </div>
-      )}
-
-      {/* 관련 진단 — 이 칸이 막막할 때 쓰는 입력 도구 (진단마다 얻는 게 다름) */}
-      {relatedSlugs.length > 0 && (
-        <div className="mt-5">
-          <p className="mb-2 text-[12.5px] font-bold text-ink/60">
-            채우기 막막할 땐{" "}
-            <span className="text-pink underline decoration-pink/40 underline-offset-2">1인 사업가</span>{" "}
-            전용 테스트를 추천드립니다
-          </p>
-          <div className="space-y-2">
-            {relatedSlugs.map((slug) => {
-              const info = DIAGNOSIS_INFO[slug];
-              if (!info) return null;
-              return (
-                <a
-                  key={slug}
-                  href={`${DIAGNOSIS_URL}/landing/${slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 rounded-xl border border-line bg-white px-4 py-3 transition hover:border-pink"
-                >
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-soft-pink text-[18px]">
-                    {info.emoji}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-[14px] font-bold text-ink">{info.title}</span>
-                    <span className="mt-0.5 block text-[12px] leading-relaxed text-muted">{info.copy}</span>
-                  </span>
-                  <span className="shrink-0 text-[13px] font-bold text-pink">열기 →</span>
-                </a>
-              );
-            })}
-          </div>
         </div>
       )}
 

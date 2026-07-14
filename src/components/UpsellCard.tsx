@@ -17,7 +17,7 @@ export default function UpsellCard() {
     },
     {
       emoji: "🎯",
-      title: "1:1 무기진단",
+      title: "마케팅 제조실",
       desc: "혼자 안 풀리는 지점을 전문가와 1:1로",
       url: CONSULT_URL,
     },
@@ -26,7 +26,7 @@ export default function UpsellCard() {
   return (
     <div className="rounded-2xl border border-pink/30 bg-soft-pink p-4">
       <p className="text-[11px] font-bold text-pink">이걸 실제 매출로 바꾸고 싶다면</p>
-      <p className="mt-1 text-[13.5px] font-extrabold text-ink">다음 단계로 가는 두 갈래</p>
+      <p className="mt-1 text-[13.5px] font-extrabold text-ink">다음 단계를 시작해보세요</p>
 
       <div className="mt-3 space-y-2">
         {items.map((it) => {
