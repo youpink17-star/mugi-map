@@ -18,6 +18,18 @@
   box-shadow: 4px 4px 0 0 #ff2f8f;
 }
 
+/* 콘텐츠 복사 방지 — 입력창(작성 중인 내 글)은 예외로 정상 선택·복사 가능 */
+body {
+  -webkit-user-select: none;
+  user-select: none;
+}
+input,
+textarea,
+[contenteditable="true"] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 /* 다음 채울 노드 살짝 통통 튀기 */
 @keyframes bounce-slow {
   0%, 100% { transform: translateY(0); }

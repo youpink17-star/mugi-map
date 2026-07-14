@@ -22,7 +22,10 @@ export function getClientIp(req: Request): string {
 export async function checkRateLimit(ip: string, routeKey: string): Promise<boolean> {
   try {
     const { getStore } = await import("@netlify/blobs");
-    const store = getStore(STORE_NAME);
+    // 기본값(eventual)은 쓰기 직후 바로 읽으면 이전 값이 안 보일 수 있어
+    // 짧은 시간에 연속 요청이 오면 카운터가 매번 리셋되는 것처럼 보인다.
+    // 요청 제한은 정확한 최신값이 필요하므로 strong consistency로 읽는다.
+    const store = getStore(STORE_NAME, { consistency: "strong" });
     const key = `${routeKey}:${ip}`;
     const now = Date.now();
     const raw = (await store.get(key, { type: "json" })) as

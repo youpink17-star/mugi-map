@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import AppShell from "@/components/AppShell";
+import CopyGuard from "@/components/CopyGuard";
 
 export const metadata: Metadata = {
   title: "무기지도 — 1인사업가의 사업 지도",
@@ -27,6 +28,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="font-sans">
+        <CopyGuard />
         <AppShell>{children}</AppShell>
       </body>
     </html>
