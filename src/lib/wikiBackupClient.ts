@@ -42,3 +42,13 @@ export function buildRecoveryUrl(code: string): string {
   if (typeof window === "undefined") return "";
   return `${window.location.origin}/wiki/restore/${code}`;
 }
+
+const CODE_RE = /^[a-z0-9]{10,20}$/;
+
+// 사용자가 전체 링크를 붙여넣든, 코드만 붙여넣든 둘 다 받아서 코드만 뽑아낸다.
+export function extractRestoreCode(input: string): string | null {
+  const trimmed = input.trim();
+  if (CODE_RE.test(trimmed)) return trimmed;
+  const match = trimmed.match(/\/wiki\/restore\/([a-z0-9]{10,20})/);
+  return match ? match[1] : null;
+}
