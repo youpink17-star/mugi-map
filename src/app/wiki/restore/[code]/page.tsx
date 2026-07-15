@@ -3,47 +3,70 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { restoreFromBackup, loadWiki, completionRate } from "@/lib/wikiStore";
 
+type Status = "checking" | "confirm" | "loading" | "error";
+
 export default function RestorePage({ params }: { params: { code: string } }) {
   const router = useRouter();
-  const [status, setStatus] = useState<"loading" | "error">("loading");
+  const [status, setStatus] = useState<Status>("checking");
+
+  async function applyRestore() {
+    setStatus("loading");
+    try {
+      const res = await fetch(`/api/wiki/restore/${params.code}`);
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data?.wiki) {
+        setStatus("error");
+        return;
+      }
+      restoreFromBackup(data.wiki);
+      router.replace("/wiki");
+    } catch {
+      setStatus("error");
+    }
+  }
 
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        // 이 기기에 이미 어느 정도 채운 위키가 있으면, 덮어쓰기 전에 먼저 확인받는다.
-        const existing = loadWiki();
-        if (existing && completionRate(existing) > 0) {
-          const ok = window.confirm(
-            "이 기기에 이미 작성 중인 위키가 있어요. 복구 링크의 내용으로 덮어쓸까요? (되돌릴 수 없어요)"
-          );
-          if (!ok) {
-            router.replace("/wiki");
-            return;
-          }
-        }
+    // 이 기기에 이미 어느 정도 채운 위키가 있으면, 덮어쓰기 전에 먼저 확인받는다.
+    const existing = loadWiki();
+    if (existing && completionRate(existing) > 0) {
+      setStatus("confirm");
+      return;
+    }
+    void applyRestore();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.code]);
 
-        const res = await fetch(`/api/wiki/restore/${params.code}`);
-        const data = await res.json().catch(() => null);
-        if (cancelled) return;
-        if (!res.ok || !data?.wiki) {
-          setStatus("error");
-          return;
-        }
-        restoreFromBackup(data.wiki);
-        router.replace("/wiki");
-      } catch {
-        if (!cancelled) setStatus("error");
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [params.code, router]);
+  if (status === "confirm") {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-5">
+        <div className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-card">
+          <p className="text-[16px] font-extrabold text-ink">이 위키를 덮어쓸까요?</p>
+          <p className="mt-2 text-[13.5px] leading-relaxed text-muted">
+            이 기기에 이미 작성 중인 위키가 있어요. 복구 링크의 내용으로 덮어쓰면{" "}
+            <b className="font-bold text-ink">되돌릴 수 없어요.</b>
+          </p>
+          <div className="mt-5 flex gap-2">
+            <button
+              onClick={() => router.replace("/wiki")}
+              className="flex-1 rounded-xl border border-line bg-white py-3 text-[13.5px] font-bold text-ink"
+            >
+              취소
+            </button>
+            <button
+              onClick={() => void applyRestore()}
+              className="flex-1 rounded-xl bg-pink-grad py-3 text-[13.5px] font-extrabold text-white shadow-cta"
+            >
+              덮어쓰기
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 py-24 text-center">
-      {status === "loading" ? (
+      {status === "checking" || status === "loading" ? (
         <p className="text-[14px] font-semibold text-muted">위키를 불러오는 중…</p>
       ) : (
         <>
