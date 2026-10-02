@@ -4,3 +4,16 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# 옛 주소(mugi-map.netlify.app)로 들어오면 새 주소로 자동 이동 (경로 유지)
+[[redirects]]
+  from = "https://mugi-map.netlify.app/*"
+  to = "https://map.mugimaker.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://mugi-map.netlify.app/*"
+  to = "https://map.mugimaker.com/:splat"
+  status = 301
+  force = true
