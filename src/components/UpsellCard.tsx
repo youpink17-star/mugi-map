@@ -11,14 +11,14 @@ export default function UpsellCard() {
   const items = [
     {
       emoji: "✍️",
-      title: "콘텐츠 제조실",
-      desc: "위키에 채운 걸 실제 콘텐츠로 계속 찍어내는 시스템",
+      title: "AI 콘텐츠 제조실",
+      desc: "사업 정리본에 채운 걸 실제 콘텐츠·마케팅으로 계속 찍어내는 노션 시스템",
       url: STUDIO_URL,
     },
     {
       emoji: "🎯",
-      title: "마케팅 제조실",
-      desc: "혼자 안 풀리는 지점을 전문가와 1:1로",
+      title: "관점 컨설팅 세션",
+      desc: "30분 비대면으로 상세페이지·제안서를 더 잘 팔리게",
       url: CONSULT_URL,
     },
   ];

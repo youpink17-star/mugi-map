@@ -34,16 +34,16 @@ export default function HeroIllustration({ className = "" }: { className?: strin
         <path
           d="M90 136 C 104 118 96 100 130 95 C 162 90 186 80 212 62"
           fill="none"
-          stroke="#FF2F8F"
+          stroke="#E0487C"
           strokeWidth="3.6"
           strokeLinecap="round"
         />
         {/* 출발 마커 */}
-        <circle cx="90" cy="136" r="5.5" fill="#FFFFFF" stroke="#FF2F8F" strokeWidth="3" />
+        <circle cx="90" cy="136" r="5.5" fill="#FFFFFF" stroke="#E0487C" strokeWidth="3" />
       </g>
 
       {/* 도착 핀 */}
-      <path d="M212 64 C 198 50 202 37 212 37 C 222 37 226 50 212 64 Z" fill="#FF2F8F" />
+      <path d="M212 64 C 198 50 202 37 212 37 C 222 37 226 50 212 64 Z" fill="#E0487C" />
       <circle cx="212" cy="47" r="4.6" fill="#FFFFFF" />
 
       {/* 반짝임 */}

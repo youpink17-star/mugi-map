@@ -1,4 +1,4 @@
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+@import url("https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable.min.css");
 /* 한글 픽셀(비트맵) 폰트 — 빈칸 여정 맵의 게임 느낌용 (실패해도 sans로 폴백) */
 @import url("https://cdn.jsdelivr.net/npm/galmuri/dist/Galmuri11.css");
 
@@ -15,7 +15,7 @@
   box-shadow: 4px 4px 0 0 #07071f;
 }
 .pixel-shadow-pink {
-  box-shadow: 4px 4px 0 0 #ff2f8f;
+  box-shadow: 4px 4px 0 0 #E0487C;
 }
 
 /* 콘텐츠 복사 방지 — 입력창(작성 중인 내 글)은 예외로 정상 선택·복사 가능 */

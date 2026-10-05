@@ -8,9 +8,9 @@ const config: Config = {
         navy: "#07071F",
         "navy-soft": "#080822",
         ink: "#111827",
-        pink: "#FF2F8F",
+        pink: "#E0487C",
         purple: "#8B5CF6",
-        "soft-pink": "#FFF1F7",
+        "soft-pink": "#FFF0F7",
         "app-bg": "#F7F7FA",
         line: "#E8E8EF",
         muted: "#6B7280",
@@ -23,7 +23,7 @@ const config: Config = {
       },
       boxShadow: {
         card: "0 8px 30px rgba(7,7,31,0.06)",
-        cta: "0 10px 30px rgba(255,47,143,0.30)",
+        cta: "0 10px 30px rgba(224,72,124,0.30)",
       },
       fontFamily: {
         sans: [
@@ -35,7 +35,7 @@ const config: Config = {
         ],
       },
       backgroundImage: {
-        "pink-grad": "linear-gradient(135deg, #FF2F8F 0%, #8B5CF6 100%)",
+        "pink-grad": "linear-gradient(135deg, #E7598A 0%, #D83E73 100%)",
       },
     },
   },

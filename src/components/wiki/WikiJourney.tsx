@@ -21,23 +21,9 @@ const ICON: Record<string, string> = {
   todo: "🚀",
 };
 
-// 여정(빈칸)에서 보여줄 친근한 노드 라벨 (위키 섹션 제목과 다르게)
-const JOURNEY_LABELS: Record<string, string> = {
-  overview: "1. 개요",
-  weapon: "2. 내 무기",
-  product: "3. 판매할 것",
-  target: "4. 메인 고객",
-  diff: "5. 차별화 포인트",
-  content: "6. 브랜드 콘텐츠",
-  "funnel-awareness": "7-1. 알리기 (인지)",
-  "funnel-interest": "7-2. 관심갖게 하기 (관심)",
-  "funnel-consideration": "7-3. 혹하게 만들기 (고려)",
-  "funnel-purchase": "7-4. 결정하게 만들기 (구매)",
-  todo: "8. 브랜드 최종 방향성",
-};
-
+// 지도 노드 라벨 — 사업 정리본과 같은 이름을 쓴다 (7.1 → 7-1 로만 표기)
 function journeyLabel(def: WikiSectionDef): string {
-  return JOURNEY_LABELS[def.id] ?? `${def.num}. ${def.title}`;
+  return `${def.num.replace(".", "-")}. ${def.title}`;
 }
 
 // 노드를 3구역으로 묶기: 현재 위치 확인(1-3) / 목적지 입력(4-6) / 경로 따라가기(7-8)
@@ -123,13 +109,13 @@ export default function WikiJourney({
             onClick={onBack}
             className="flex items-center gap-1.5 rounded-xl border border-white/70 bg-white/80 px-3.5 py-2 text-[13px] font-bold text-ink shadow-sm backdrop-blur"
           >
-            ← 위키로
+            ← 사업 정리본
           </button>
           <button
             onClick={onDoc}
             className="rounded-xl border border-white/70 bg-white/80 px-3.5 py-2 text-[13px] font-bold text-ink shadow-sm backdrop-blur"
           >
-            📄 정리본
+            📄 한 장 보기
           </button>
         </div>
 
@@ -150,7 +136,7 @@ export default function WikiJourney({
 
           {/* 시작 깃발 */}
           <rect x={nodes[0].x - 22} y={nodes[0].y - 42} width="2.5" height="22" rx="1" fill="#94A1B2" />
-          <path d={`M ${nodes[0].x - 20} ${nodes[0].y - 42} L ${nodes[0].x - 7} ${nodes[0].y - 37} L ${nodes[0].x - 20} ${nodes[0].y - 32} Z`} fill="#FF2F8F" />
+          <path d={`M ${nodes[0].x - 20} ${nodes[0].y - 42} L ${nodes[0].x - 7} ${nodes[0].y - 37} L ${nodes[0].x - 20} ${nodes[0].y - 32} Z`} fill="#E0487C" />
 
           {/* 목표 보물상자 */}
           <g>
@@ -167,7 +153,7 @@ export default function WikiJourney({
             <div
               key={`zone-${n.def.id}`}
               className="absolute z-20 -translate-x-1/2 -translate-y-1/2"
-              style={{ left: CX, top: n.y - 48 }}
+              style={{ left: CX, top: n.y - (nodes.indexOf(n) === firstEmptyIdx ? 76 : 48) }}
             >
               <span className="rounded-full bg-purple px-3 py-1 text-[11px] font-extrabold text-white shadow-[0_4px_10px_rgba(139,92,246,0.35)]">
                 {ZONE_OF[n.def.id]}
@@ -250,7 +236,7 @@ function CharacterHeader({
         </button>
       ) : (
         <div className="mt-3 rounded-2xl bg-soft-pink px-4 py-3 text-center text-[13.5px] font-extrabold text-pink">
-          모든 칸을 채웠어요! 🎉 정리본에서 확인해 보세요.
+          모든 칸을 채웠어요! 🎉 한 장으로 보기에서 확인해 보세요.
         </div>
       )}
     </div>

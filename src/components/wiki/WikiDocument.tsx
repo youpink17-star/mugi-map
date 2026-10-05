@@ -32,7 +32,7 @@ export default function WikiDocument({
     <article className="overflow-hidden rounded-3xl border border-line bg-white shadow-card">
       {/* 문서 헤더 (프로필 상단 정보) */}
       <header className="border-b border-line bg-navy px-6 py-7 text-white md:px-9">
-        <p className="text-[12px] font-bold text-pink">내 사업 정리본</p>
+        <p className="text-[12px] font-bold text-pink">한 장으로 보는 내 사업</p>
         <h1 className="mt-1 text-[24px] font-extrabold md:text-[28px]">{wiki.title}</h1>
         <div className="mt-3 flex flex-wrap gap-2 text-[12px]">
           <span className="rounded-full bg-white/10 px-3 py-1 font-bold text-white/85">
@@ -64,10 +64,10 @@ export default function WikiDocument({
         {/* 아이디어 노트는 별도 페이지로 분리 — 요약 링크만 */}
         <div className="mt-2 flex items-center justify-between border-t border-line pt-5">
           <span className="text-[13px] font-bold text-ink/70">
-            🗒️ 아이디어 노트 {wiki.notes.length}개
+            🗒️ 아이디어 {wiki.notes.length}개
           </span>
           <Link href="/notes" className="text-[13px] font-bold text-pink">
-            노트 열기 →
+            아이디어 열기 →
           </Link>
         </div>
       </div>
@@ -115,7 +115,7 @@ function SectionBlock({
           onClick={() => onEdit(def.id)}
           className="mt-2 flex items-center gap-2 rounded-xl border border-dashed border-line bg-app-bg px-3.5 py-2.5 text-[13px] font-bold text-muted transition hover:border-pink hover:text-pink"
         >
-          비어 있음 · 이 칸 채우기 →
+          이 칸 채우기 →
         </button>
       )}
     </section>

@@ -70,8 +70,8 @@ export default function NavIllustration({ className = "" }: { className?: string
       <g>
         <rect x="156" y="296" width="48" height="36" rx="11" fill="url(#navCar)" />
         <rect x="162" y="301" width="36" height="15" rx="6" fill="#C7D6FF" />
-        <rect x="160" y="320" width="8" height="6" rx="2" fill="#FF2F8F" />
-        <rect x="192" y="320" width="8" height="6" rx="2" fill="#FF2F8F" />
+        <rect x="160" y="320" width="8" height="6" rx="2" fill="#E0487C" />
+        <rect x="192" y="320" width="8" height="6" rx="2" fill="#E0487C" />
         <rect x="158" y="328" width="44" height="5" rx="2.5" fill="#3F4FD0" />
       </g>
 
@@ -95,7 +95,7 @@ export default function NavIllustration({ className = "" }: { className?: string
         strokeLinejoin="round"
       />
       <text x="162" y="64" fontSize="9.5" fontWeight="800" fill="#FFFFFF">다음 칸</text>
-      <text x="162" y="76" fontSize="8.5" fontWeight="700" fill="#FFFFFF" opacity="0.92">내 무기 →</text>
+      <text x="162" y="76" fontSize="8.5" fontWeight="700" fill="#FFFFFF" opacity="0.92">개요 →</text>
 
       {/* 내비 지도 영역 */}
       <rect x="128" y="90" width="104" height="134" rx="9" fill="#EDF1FA" />
@@ -113,13 +113,13 @@ export default function NavIllustration({ className = "" }: { className?: string
       <path
         d="M180 218 L180 165 Q180 158 188 158 L218 158"
         fill="none"
-        stroke="#FF2F8F"
+        stroke="#E0487C"
         strokeWidth="4.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       {/* 목적지 */}
-      <circle cx="219" cy="158" r="4.5" fill="#FF2F8F" />
+      <circle cx="219" cy="158" r="4.5" fill="#E0487C" />
       <circle cx="219" cy="158" r="1.8" fill="#FFFFFF" />
       {/* 현재 위치 */}
       <circle cx="180" cy="206" r="7" fill="#3D5AFE" />

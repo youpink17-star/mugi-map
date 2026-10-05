@@ -9,6 +9,8 @@ import {
   type ExampleContext,
 } from "@/lib/wiki";
 import type { WikiSectionState } from "@/lib/wikiStore";
+import { getFlow, carriedAnswers, flowName as flowNameFrom } from "@/lib/questionFlows";
+import QuestionFlow from "./QuestionFlow";
 
 const STATUS_CYCLE: SectionStatus[] = ["empty", "draft", "needs_update", "complete"];
 
@@ -19,6 +21,11 @@ export default function WikiSectionEditor({
   exampleCtx,
   onCommit,
   onStatus,
+  onFlowComplete,
+  onFlowProgress,
+  onNext,
+  flowName = "내 사업",
+  allAnswers = {},
   autoFocus = false,
 }: {
   def: WikiSectionDef;
@@ -26,12 +33,36 @@ export default function WikiSectionEditor({
   exampleCtx: ExampleContext;
   onCommit: (text: string) => void;
   onStatus: (status: SectionStatus) => void;
+  onFlowComplete?: (answers: Record<string, string>, text: string) => void;
+  onFlowProgress?: (answers: Record<string, string>) => void;
+  onNext?: () => void;
+  flowName?: string;
+  allAnswers?: Record<string, Record<string, string> | undefined>;
   autoFocus?: boolean;
 }) {
   const [text, setText] = useState(state.content);
   const [saved, setSaved] = useState(false);
   const [showBrand, setShowBrand] = useState(false);
   const taRef = useRef<HTMLTextAreaElement>(null);
+  const flow = onFlowComplete ? getFlow(def.id) : undefined;
+  type View = "flow" | "result" | "classic";
+  const initialView = (): View => (flow ? (state.content.trim() ? "result" : "flow") : "classic");
+  const [view, setView] = useState<View>(initialView);
+  const [justDone, setJustDone] = useState(false);
+  useEffect(() => {
+    setView(initialView());
+    setJustDone(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [def.id]);
+  // 같은 칸이 다른 화면(폰/PC 레이아웃)에서 채워지거나 비워지면 보이는 화면도 맞춘다
+  const hasContent = !!state.content.trim();
+  // 질문을 끝까지 답해서 만든 칸인지 (홈에서 넘어온 이름·한 줄만 있는 경우는 제외)
+  const answeredByFlow = !!flow && flow.questions.filter((qq) => !qq.skip).every((qq) => !!state.answers?.[qq.id]);
+  useEffect(() => {
+    if (!flow) return;
+    setView((v) => (hasContent && v === "flow" ? "result" : !hasContent && v === "result" ? "flow" : v));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasContent]);
 
   // 섹션이 바뀌면 입력값 동기화
   useEffect(() => setText(state.content), [def.id, state.content]);
@@ -59,8 +90,100 @@ export default function WikiSectionEditor({
     taRef.current?.focus();
   }
 
+  if (flow && view !== "classic") {
+    return (
+      <div>
+        <p className="text-[11px] font-bold text-purple">{def.num}</p>
+        <h2 className="text-[19px] font-extrabold leading-tight text-ink lg:text-[22px]">{def.title}</h2>
+        {def.purpose && <p className="mt-1 text-[13.5px] font-bold text-ink/75">{def.purpose}</p>}
+
+        {view === "flow" ? (
+          <div className="mt-4">
+            <QuestionFlow
+              flow={flow}
+              initialAnswers={{ ...carriedAnswers(flow, allAnswers), ...(state.answers ?? {}) }}
+              carried={carriedAnswers(flow, allAnswers)}
+              startStep={
+                hasContent
+                  ? 0
+                  : Math.max(0, flow.questions.findIndex((qq) => !(state.answers ?? {})[qq.id]))
+              }
+              seedNote={state.answers?._seed}
+              onProgress={hasContent ? undefined : onFlowProgress}
+              onWriteSelf={() => setView("classic")}
+              onComplete={(a) => {
+                onFlowComplete!(a, flow.assemble(a, { name: flowNameFrom({ ...allAnswers, [def.id]: a }, flowName) }));
+                setJustDone(true);
+                setView("result");
+              }}
+            />
+          </div>
+        ) : (
+          <div className="mt-4">
+            <div
+              className={`rounded-2xl border p-5 ${justDone ? "border-pink/40 bg-gradient-to-b from-soft-pink to-white" : "border-line bg-white"}`}
+              style={justDone ? { animation: "qfPop .35s ease-out" } : undefined}
+            >
+              <style>{`@keyframes qfPop{0%{opacity:0;transform:scale(.96)}100%{opacity:1;transform:none}}`}</style>
+              {justDone && (
+                <div className="mb-3 text-center">
+                  <div className="text-[34px] leading-none">🎉</div>
+                  <p className="mt-2 text-[17px] font-extrabold text-ink">{flow.doneTitle}</p>
+                  <p className="mt-0.5 text-[12.5px] font-bold text-emerald-600">✓ {def.title} 칸 완성 · 정리본에 저장됐어요</p>
+                </div>
+              )}
+              {!justDone && (
+                <p className={`mb-2 flex items-center gap-1.5 text-[12px] font-bold ${status === "complete" ? "text-emerald-600" : "text-purple"}`}>
+                  <span className={`h-1.5 w-1.5 rounded-full ${STATUS_META[status].dot}`} />
+                  {status === "complete" ? "완성된 칸" : STATUS_META[status].label}
+                </p>
+              )}
+              <p className="text-[15px] leading-[1.75] text-ink">{state.content}</p>
+            </div>
+            {onNext && (
+              <button
+                onClick={onNext}
+                className="mt-3 w-full rounded-2xl bg-pink-grad py-3.5 text-[15px] font-extrabold text-white shadow-cta"
+              >
+                다음 칸 채우기 →
+              </button>
+            )}
+            {!answeredByFlow && (
+              <p className="mt-3 text-[11.5px] text-muted">질문으로 새로 쓰면 지금 적힌 글은 새 문장으로 바뀌어요.</p>
+            )}
+            <div className="mt-2 flex gap-2">
+              <button
+                onClick={() => {
+                  setJustDone(false);
+                  setView("flow");
+                }}
+                className="flex-1 rounded-xl border border-line bg-white py-2.5 text-[13px] font-bold text-ink"
+              >
+                {answeredByFlow ? "질문으로 다시 답하기" : "질문으로 새로 쓰기"}
+              </button>
+              <button
+                onClick={() => setView("classic")}
+                className="flex-1 rounded-xl border border-line bg-white py-2.5 text-[13px] font-bold text-ink"
+              >
+                문장 직접 고치기
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div>
+      {flow && (
+        <button
+          onClick={() => setView(state.content.trim() ? "result" : "flow")}
+          className="mb-3 rounded-xl border border-pink/40 bg-soft-pink px-3.5 py-2 text-[12.5px] font-bold text-pink"
+        >
+          ← 질문으로 채우기
+        </button>
+      )}
       {/* 제목 + 설명 */}
       <div>
         <p className="text-[11px] font-bold text-purple">{def.num}</p>

@@ -20,7 +20,7 @@ export default function NotesView() {
   if (!wiki) {
     return (
       <div className="flex flex-1 items-center justify-center py-24 text-[14px] text-muted">
-        노트를 불러오는 중…
+        아이디어를 불러오는 중…
       </div>
     );
   }

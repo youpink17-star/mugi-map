@@ -21,6 +21,7 @@ export interface WikiSectionState {
   status: SectionStatus;
   content: string;
   lastUpdatedAt: string | null;
+  answers?: Record<string, string>; // 질문 방식으로 채운 칸의 답 (다시 답할 때 미리 채움)
 }
 
 export interface WikiNote {
@@ -98,7 +99,16 @@ function normalizeSection(v: unknown): WikiSectionState {
     status: normalizeStatus(s.status),
     content: str(s.content),
     lastUpdatedAt: typeof s.lastUpdatedAt === "string" ? s.lastUpdatedAt : null,
+    ...(normalizeAnswers(s.answers) ?? {}),
   };
+}
+function normalizeAnswers(v: unknown): { answers: Record<string, string> } | null {
+  if (!v || typeof v !== "object") return null;
+  const out: Record<string, string> = {};
+  for (const [k, val] of Object.entries(v as Record<string, unknown>).slice(0, 30)) {
+    if (typeof val === "string") out[k.slice(0, 40)] = val.slice(0, 300);
+  }
+  return Object.keys(out).length ? { answers: out } : null;
 }
 function normalizeNote(v: unknown): WikiNote {
   const n = v && typeof v === "object" ? (v as Partial<WikiNote>) : {};

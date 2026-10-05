@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import BottomTabs from "./BottomTabs";
 import NavIllustration from "./NavIllustration";
 import HeroIllustration from "./HeroIllustration";
+import { WikiUseShowcase } from "./wiki/WikiUses";
 import {
   BUSINESS_TYPE_ORDER,
   BUSINESS_TYPE_LABEL,
@@ -25,15 +26,6 @@ const REPORT_ENV: Record<string, string | undefined> = {
   NEXT_PUBLIC_URL_REPORT_ITEM: process.env.NEXT_PUBLIC_URL_REPORT_ITEM,
   NEXT_PUBLIC_URL_REPORT_MARKETING: process.env.NEXT_PUBLIC_URL_REPORT_MARKETING,
 };
-
-// 내비게이션이 안내하는 길의 경유지(번호) + 별도의 아이디어 노트
-const STOPS = [
-  { emoji: "🧭", label: "내 무기", q: "나는 무엇을 가장 잘하지?" },
-  { emoji: "💎", label: "팔 것", q: "어떤 상품과 서비스로 돈을 벌지?" },
-  { emoji: "🎯", label: "타겟", q: "누구에게 팔아야 가장 잘 팔리지?" },
-  { emoji: "✨", label: "차별화", q: "고객이 나를 굳이 왜 선택해야 하지?" },
-  { emoji: "📣", label: "콘텐츠", q: "어떻게 알려지고 신뢰를 쌓지?" },
-];
 
 function goToStart() {
   document.getElementById("start-q")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -72,9 +64,13 @@ export default function HomeView() {
       businessType: selling === "selling" ? form.type : "undecided",
       startedAt: selling === "selling" && form.startedAt ? form.startedAt : undefined,
     });
-    if (form.oneLiner.trim()) {
-      // 입력한 한 줄을 '개요' 칸 초안으로 심어 둔다 (바로 빈칸이 하나 채워짐)
-      next = updateSection(next, "overview", { content: form.oneLiner.trim(), status: "draft" });
+    // 여기서 적은 이름·한 줄은 '개요' 질문에 미리 채워 둔다 (같은 걸 두 번 묻지 않게).
+    // 개요 칸은 질문에 답해야 완성되므로 본문은 비워 둔다.
+    const seed: Record<string, string> = {};
+    if (form.name.trim()) seed.name = form.name.trim().slice(0, 60);
+    if (form.oneLiner.trim()) seed._seed = form.oneLiner.trim().slice(0, 200);
+    if (Object.keys(seed).length && !w.sections.overview?.content) {
+      next = updateSection(next, "overview", { answers: { ...(w.sections.overview?.answers ?? {}), ...seed } });
     }
     void next;
     router.push("/wiki");
@@ -108,32 +104,48 @@ export default function HomeView() {
               href="/wiki"
               className="mt-4 flex items-center justify-between rounded-2xl bg-white px-4 py-3.5 shadow-card ring-1 ring-line"
             >
-              <span className="text-[14px] font-bold text-ink">내 사업 위키 이어서 채우기</span>
+              <span className="text-[14px] font-bold text-ink">내 사업 정리본 이어서 채우기</span>
               <span className="text-[13px] font-extrabold text-pink">완성도 {rate}% →</span>
             </Link>
           )}
         </div>
       </section>
 
-      {/* 1단계: 질문 (2택) */}
+      {/* 1단계: 질문 (2택) — 들어오자마자 누를 수 있게 큰 버튼 두 개 */}
       {step === "ask" && (
         <section id="start-q" className="mx-auto w-full max-w-2xl scroll-mt-4 px-5 pt-7 md:max-w-3xl md:px-10">
-          <h2 className="text-[18px] font-extrabold text-ink md:text-[22px]">지금 판매할 상품이 있나요?</h2>
-          <p className="mt-1 text-[13px] text-muted md:text-[14px]">현재 상황에 따라 먼저 채울 칸을 짚어드립니다.</p>
+          <h2 className="text-[20px] font-extrabold leading-snug text-ink md:text-[24px]">
+            지금 팔 상품이 <span className="text-pink">있나요?</span>
+          </h2>
 
-          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
-            <ChoiceButton
-              emoji="🙅🏻‍♀️"
-              title="아직 없어요"
-              desc="나만의 강점을 정리해 한 줄 아이디어를 사업으로 만들어요"
-              onClick={() => choose("none")}
-            />
-            <ChoiceButton
-              emoji="🙆🏻‍♀️"
-              title="있어요"
-              desc="현재 마케팅 빈틈을 한눈에 확인하고, 더 많은 고객이 찾아오고 구매하게 만드는 방법을 알아가요"
-              onClick={() => choose("selling")}
-            />
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <ChoiceButton mark="?" title="아직 없어요" desc="강점부터 찾기" onClick={() => choose("none")} />
+            <ChoiceButton mark="✓" accent title="있어요" desc="빈틈부터 찾기" onClick={() => choose("selling")} />
+          </div>
+          <p className="mt-3 text-center text-[12.5px] text-muted">누르면 내 지도가 바로 만들어집니다</p>
+
+          {/* 무기지도가 해주는 일 — 글 대신 작은 그림 3장 */}
+          <h2 className="mt-9 text-[17px] font-extrabold text-ink">무기지도가 해주는 일</h2>
+          <div className="mt-3 grid grid-cols-3 gap-2.5">
+            <FeatureTile label="한 장으로 정리">
+              <div className="w-full px-3">
+                <div className="h-[7px] w-[70%] rounded-full bg-navy" />
+                <div className="mt-1.5 h-[7px] rounded-full bg-[#E3E1EC]" />
+                <div className="mt-1.5 h-[7px] w-[60%] rounded-full bg-[#E3E1EC]" />
+              </div>
+            </FeatureTile>
+            <FeatureTile label="다음 칸 안내">
+              <svg width="76" height="34" viewBox="0 0 76 34" aria-hidden="true">
+                <path d="M8 26 C28 26,28 10,48 10 S64 8 68 8" fill="none" stroke="#E0487C" strokeWidth="4" strokeLinecap="round" />
+                <circle cx="8" cy="26" r="4.5" fill="#fff" stroke="#E0487C" strokeWidth="3" />
+                <circle cx="68" cy="8" r="5.5" fill="#E0487C" />
+              </svg>
+            </FeatureTile>
+            <FeatureTile label="AI에 꺼내 쓰기">
+              <span className="rounded-full rounded-br-[4px] bg-pink px-2.5 py-1 text-[10.5px] font-extrabold text-white">
+                글 써줘
+              </span>
+            </FeatureTile>
           </div>
         </section>
       )}
@@ -277,36 +289,8 @@ export default function HomeView() {
             <NavIllustration className="h-auto w-full" />
           </button>
 
-          {/* 내비가 안내하는 길(경유지) — 일러스트와 이어지는 코스 */}
-          <div className="mt-3 rounded-2xl border border-line bg-white p-4">
-            <p className="text-[13.5px] font-extrabold text-ink">내비게이션이 안내하는 길</p>
-            <p className="mt-0.5 text-[12px] leading-relaxed text-muted">
-              막힌 칸부터 차례로 짚어드립니다. 순서대로 채우다 보면 사업 전체가 완성됩니다.
-            </p>
-            <ol className="mt-3 space-y-2.5">
-              {STOPS.map((s, i) => (
-                <li key={s.label} className="flex items-center gap-3">
-                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-soft-pink text-[11px] font-extrabold text-pink">
-                    {i + 1}
-                  </span>
-                  <span className="text-[18px] leading-none">{s.emoji}</span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-[13.5px] font-extrabold text-ink">{s.label}</span>
-                    <span className="block text-[12px] text-muted">{s.q}</span>
-                  </span>
-                </li>
-              ))}
-            </ol>
-
-            {/* 경유지 외 별도 — 아이디어 노트 */}
-            <div className="mt-3 flex items-center gap-3 rounded-xl border border-dashed border-line bg-app-bg/60 px-3 py-2.5">
-              <span className="text-[18px] leading-none">🗒️</span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-[13px] font-extrabold text-ink">아이디어 노트</span>
-                <span className="block text-[12px] text-muted">떠오른 생각 모으기</span>
-              </span>
-            </div>
-          </div>
+          {/* 완성한 지도의 쓸모 — 나만 보고 끝나는 문서가 아니라는 걸 보여준다 */}
+          <WikiUseShowcase />
 
           {/* 무기진단 별도 진입 — 막힐 때 쓰는 도구 */}
           <Link
@@ -330,7 +314,7 @@ export default function HomeView() {
       )}
 
       <footer className="mx-auto mt-10 w-full max-w-2xl border-t border-line px-5 py-6 text-center text-[12px] text-muted md:max-w-3xl md:px-10">
-        <b className="text-ink">무기제작소</b> · 1인사업가의 사업을 위키처럼 정리하는 작업실
+        <b className="text-ink">무기제작소</b> · 1인사업가의 사업을 한 장으로 정리하는 작업실
         <div className="mt-3 flex items-center justify-center gap-3">
           <a
             href="https://www.instagram.com/mugi_maker/"
@@ -358,12 +342,14 @@ export default function HomeView() {
 }
 
 function ChoiceButton({
-  emoji,
+  mark,
+  accent = false,
   title,
   desc,
   onClick,
 }: {
-  emoji: string;
+  mark: string;
+  accent?: boolean;
   title: string;
   desc: string;
   onClick: () => void;
@@ -371,17 +357,28 @@ function ChoiceButton({
   return (
     <button
       onClick={onClick}
-      className="flex w-full items-center gap-4 rounded-2xl border border-line bg-white p-4 text-left transition hover:border-pink"
+      className="flex w-full flex-col items-center rounded-2xl border-2 border-line bg-white px-3 py-6 text-center transition hover:border-pink hover:bg-soft-pink active:scale-[0.98]"
     >
-      <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-soft-pink text-[24px]">
-        {emoji}
+      <span
+        className={`grid h-12 w-12 place-items-center rounded-full text-[22px] font-extrabold leading-none ${
+          accent ? "bg-pink text-white" : "bg-app-bg text-muted"
+        }`}
+      >
+        {mark}
       </span>
-      <span className="min-w-0 flex-1">
-        <span className="block text-[16px] font-extrabold text-ink">{title}</span>
-        <span className="mt-0.5 block text-[13px] leading-relaxed text-muted">{desc}</span>
-      </span>
-      <span className="shrink-0 text-[18px] font-extrabold text-pink">→</span>
+      <span className="mt-3 block text-[16.5px] font-extrabold text-ink">{title}</span>
+      <span className="mt-0.5 block text-[13px] text-muted">{desc}</span>
     </button>
+  );
+}
+
+// 작은 그림 + 한마디 (무기지도가 해주는 일)
+function FeatureTile({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="rounded-2xl border border-line bg-white p-2.5">
+      <div className="grid h-[62px] place-items-center rounded-xl bg-[#F3F1F8]">{children}</div>
+      <p className="mt-2 text-center text-[12.5px] font-extrabold text-ink [word-break:keep-all]">{label}</p>
+    </div>
   );
 }
 

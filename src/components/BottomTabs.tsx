@@ -7,10 +7,10 @@ type TabId = "home" | "wiki" | "blanks" | "tools" | "notes";
 
 const TABS: { id: TabId; label: string; emoji: string; href: string }[] = [
   { id: "home", label: "홈", emoji: "🏠", href: "/" },
-  { id: "wiki", label: "위키", emoji: "📓", href: "/wiki" },
-  { id: "blanks", label: "빈칸", emoji: "🧩", href: "/wiki?view=blanks" },
+  { id: "wiki", label: "사업 정리본", emoji: "📓", href: "/wiki" },
+  { id: "blanks", label: "지도", emoji: "🗺️", href: "/wiki?view=blanks" },
   { id: "tools", label: "무기상점", emoji: "🛒", href: "/tools" },
-  { id: "notes", label: "노트", emoji: "🗒️", href: "/notes" },
+  { id: "notes", label: "아이디어", emoji: "🗒️", href: "/notes" },
 ];
 
 export default function BottomTabs({

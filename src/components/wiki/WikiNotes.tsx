@@ -42,7 +42,7 @@ export default function WikiNotes({
     <div>
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] font-bold text-purple">아이디어 노트</p>
+          <p className="text-[11px] font-bold text-purple">아이디어</p>
           <h2 className="text-[20px] font-extrabold leading-tight text-ink md:text-[24px]">
             불편함 노트
           </h2>
@@ -94,7 +94,7 @@ export default function WikiNotes({
               disabled={!form.discomfort.trim()}
               className="flex-1 rounded-xl bg-navy py-3 text-[14px] font-extrabold text-white disabled:opacity-40"
             >
-              노트에 저장
+              아이디어에 저장
             </button>
             <button
               onClick={() => {

@@ -39,7 +39,7 @@ export default function WikiBackupLink() {
     <div className="rounded-2xl border border-line bg-white p-4">
       <p className="text-[12px] font-extrabold text-ink">다른 기기에서 이어보기</p>
       <p className="mt-1 text-[13px] leading-relaxed text-muted">
-        가입 없이, 이 링크만 저장해두면 다른 기기에서도 이 위키를 이어서 쓸 수 있어요.
+        가입 없이, 이 링크만 저장해두면 다른 기기에서도 이 정리본을 이어서 쓸 수 있어요.
       </p>
       {code ? (
         <button

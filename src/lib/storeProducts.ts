@@ -1,3 +1,5 @@
+import { DIAGNOSIS_URL } from "./links";
+
 // ============================================================
 //  상품 카탈로그 (A~E 5층) — 외부(아임웹/노션)에서 판매하는 상품 안내.
 //  결제는 externalUrl 링크로 연결. 실제 URL은 환경변수로 주입(없으면 준비 중).
@@ -9,9 +11,10 @@ export type Tier = "free" | "entry" | "flagship" | "diagnosis" | "consulting";
 export interface StoreProduct {
   id: string;
   title: string;
-  price?: string; // 무료 상품에만 "무료"로 표기. 유료는 금액이 자주 바뀌어 비공개(보러가기/준비 중 배지로 대신)
   desc: string;
-  badge?: string; // 상품 형태 라벨 — "NOTION" | "전자책" 등
+  badge?: string; // 상품 라벨 — "NOTION" | "전자책" | "무료" | "B2B" 등
+  internalHref?: string; // 무기지도 안에서 바로 여는 경우 (예: 사업 정리본)
+  cta?: string; // 버튼 문구 (없으면 링크 있을 때 "보러가기 ↗", 없으면 "준비 중")
   envKey?: string; // 이 상품의 외부 링크 환경변수 이름
   defaultUrl?: string; // env 미설정 시 쓸 기본 링크(이미 라이브인 상품)
 }
@@ -36,51 +39,85 @@ export const STORE_TIERS: StoreTier[] = [
     tier: "free",
     emoji: "🎁",
     label: "무료로 시작하기",
-    goal: "먼저 내 무기와 사업의 빈칸부터 확인하세요",
+    goal: "내 무기와 사업의 빈칸부터 확인하기",
     products: [
-      { id: "free-wiki", title: "무기위키", price: "무료", desc: "내 사업을 한 장으로 정리하는 사업 위키" },
-      { id: "free-diagnosis", title: "무기진단", price: "무료", desc: "내 강점·유형을 찾는 진단" },
+      {
+        id: "free-wiki",
+        title: "사업 정리본",
+        badge: "지금 이곳",
+        desc: "질문에 답만 하면 내 사업이 한 장으로 정리",
+        internalHref: "/wiki",
+        cta: "바로 채우기 →",
+      },
+      {
+        id: "free-diagnosis",
+        title: "무기진단",
+        badge: "무료",
+        desc: "24문항으로 내가 잘하는 것과 무기 유형 찾기",
+        defaultUrl: DIAGNOSIS_URL,
+      },
     ],
   },
   {
     tier: "entry",
     emoji: "🌱",
     label: "가볍게 입문하기",
-    goal: "지금 바로 받아보는 무료 리포트로 먼저 감을 잡으세요",
+    goal: "리포트 한 권으로 방향 먼저 잡기",
     products: [
-      { id: "report-item", title: "사업 아이템 발굴 리포트", desc: "내 사주와 특징으로 찾는 40p 아이템 리포트", envKey: "NEXT_PUBLIC_URL_REPORT_ITEM", defaultUrl: "https://funny-cactus-item.netlify.app/" },
-      { id: "report-marketing", title: "사업 및 마케팅 전략 리포트", desc: "내 사업에 맞춘 40p 개인화 마케팅 리포트", envKey: "NEXT_PUBLIC_URL_REPORT_MARKETING", defaultUrl: "https://funny-cactus-25ffa8.netlify.app/" },
+      { id: "report-item", title: "사업 아이템 발굴 리포트", badge: "PDF 리포트", desc: "나에게 맞는 사업 아이템 3개와 90일 계획을 40쪽에 정리", envKey: "NEXT_PUBLIC_URL_REPORT_ITEM", defaultUrl: "https://item.mugimaker.com/" },
+      { id: "report-marketing", title: "사업 및 마케팅 전략 리포트", badge: "PDF 리포트", desc: "열심히 해도 안 팔리는 이유와 해결법을 40쪽에 정리", envKey: "NEXT_PUBLIC_URL_REPORT_MARKETING", defaultUrl: "https://marketing.mugimaker.com/" },
     ],
   },
   {
     tier: "flagship",
     emoji: "⭐",
-    label: "AI 콘텐츠 제조실",
-    goal: "막힘 없이 콘텐츠와 마케팅을 계속 만들어내는 나만의 시스템",
+    label: "혼자서도 계속 만들어내기",
+    goal: "막힘 없이 콘텐츠와 마케팅을 계속 만드는 나만의 도구",
     products: [
-      { id: "experiment-book", title: "48시간 안에 끝내는 AI 마케팅 실험북", desc: "가진 트래픽을 매출로 바꿔보는 48시간 실험북", badge: "전자책", envKey: "NEXT_PUBLIC_URL_EXPERIMENT_BOOK" },
-      { id: "studio-full", title: "콘텐츠 제조실", desc: "여러 채널 콘텐츠를 한 번에 찍어내는 시스템", badge: "NOTION", envKey: "NEXT_PUBLIC_URL_STUDIO_FULL" },
-      { id: "marketing-studio", title: "마케팅 제조실", desc: "타겟부터 문구까지 마케팅을 직접 설계하는 시스템", badge: "NOTION", envKey: "NEXT_PUBLIC_URL_MARKETING_STUDIO" },
+      { id: "experiment-book", title: "혼자 하는 48시간 AI 마케팅 실험", desc: "콘텐츠부터 광고까지, 마케터 없이 주말에 끝내기", badge: "전자책", envKey: "NEXT_PUBLIC_URL_EXPERIMENT_BOOK", defaultUrl: "https://mugimaker.com/shop_view/?idx=10" },
+      {
+        id: "studio-full",
+        title: "AI 콘텐츠 제조실",
+        desc: "콘텐츠 만드는 사이트에 마케팅 설계법·잘된 광고 모음까지 한 번에",
+        badge: "NOTION",
+        envKey: "NEXT_PUBLIC_URL_STUDIO_FULL",
+        // 판매 페이지는 https://mugimaker.com/shop_view/?idx=20 — 아직 비공개라 링크를 걸지 않는다("준비 중" 표시).
+        // 공개되면 여기에 defaultUrl 로 넣는다.
+      },
     ],
   },
   {
     tier: "diagnosis",
     emoji: "🎯",
     label: "막힌 곳 빠르게 뚫기",
-    goal: "혼자 안 풀리는 지점을 함께 뚫습니다",
+    goal: "혼자 안 풀리는 곳을 함께 해결",
     products: [
-      { id: "diag-1on1", title: "마케팅 제조실", desc: "내 강점과 상품을 함께 뜯어보는 1:1 진단", envKey: "NEXT_PUBLIC_URL_DIAG_1ON1" },
-      { id: "content-room", title: "4주 콘텐츠 실행방", desc: "동료들과 소통하며 콘텐츠를 완성하는 4주 챌린지", envKey: "NEXT_PUBLIC_URL_CONTENT_ROOM" },
+      {
+        id: "diag-1on1",
+        title: "관점 컨설팅 세션",
+        badge: "30분 · 비대면",
+        desc: "30분 상담으로 상세페이지·제안서를 더 잘 팔리게 고치기",
+        envKey: "NEXT_PUBLIC_URL_DIAG_1ON1",
+        defaultUrl: "https://mugimaker.com/30",
+      },
+      { id: "content-room", title: "4주 콘텐츠 실행방", badge: "4주 챌린지", desc: "혼자 미루던 콘텐츠, 동료들과 4주 동안 끝까지 완성", envKey: "NEXT_PUBLIC_URL_CONTENT_ROOM" },
     ],
   },
   {
     tier: "consulting",
     emoji: "👑",
-    label: "맞춤형 전략 컨설팅",
-    goal: "사업 마케팅 전략을 처음부터 다시 설계합니다",
+    label: "프리미엄 컨설팅",
+    goal: "기업·법인 전용 · 의뢰하면 가격 안내",
     products: [
-      { id: "consult-funnel-strategy", title: "4주 마케팅 퍼널 구축 컨설팅", desc: "전체 마케팅 퍼널을 함께 설계하는 4주 컨설팅", envKey: "NEXT_PUBLIC_URL_CONSULT_4W" },
-      { id: "consult-funnel-agency", title: "4주 마케팅 퍼널 구축 대행", desc: "전체 마케팅 퍼널을 대신 만들어주는 4주 대행", envKey: "NEXT_PUBLIC_URL_CONSULT_8W" },
+      {
+        id: "premium-consult",
+        title: "기업 제안서 컨설팅",
+        badge: "B2B",
+        desc: "제안서·회사 소개서·투자 자료를 따내는 문서로 새로 고치기",
+        envKey: "NEXT_PUBLIC_URL_PREMIUM_CONSULT",
+        defaultUrl: "https://mugimaker.com/30",
+        cta: "의뢰하기 ↗",
+      },
     ],
   },
 ];
@@ -100,14 +137,14 @@ const REPORT_ITEM: AutoReport = {
   id: "report-item",
   title: "사업 아이템 발굴 리포트",
   desc: "내 사주와 특징을 입력하면 딱 맞는 아이템을 40p 리포트로 찾아드려요",
-  url: "https://funny-cactus-item.netlify.app/",
+  url: "https://item.mugimaker.com/",
   envKey: "NEXT_PUBLIC_URL_REPORT_ITEM",
 };
 const REPORT_MARKETING: AutoReport = {
   id: "report-marketing",
   title: "사업 및 마케팅 전략 리포트",
   desc: "내 사업에 맞춘 마케팅 방향을 40p 리포트로 개인화해 보내드려요",
-  url: "https://funny-cactus-25ffa8.netlify.app/",
+  url: "https://marketing.mugimaker.com/",
   envKey: "NEXT_PUBLIC_URL_REPORT_MARKETING",
 };
 
@@ -118,12 +155,12 @@ export function reportForSelling(selling: "none" | "selling"): AutoReport {
 
 // 위키/결과 페이지 업셀 CTA에서 쓸 대표 연결 2개
 export const UPSELL_STUDIO = {
-  title: "콘텐츠 제조실",
-  desc: "위키에 채운 걸 실제 콘텐츠로 계속 찍어내는 시스템",
+  title: "AI 콘텐츠 제조실",
+  desc: "사업 정리본에 채운 걸 실제 콘텐츠·마케팅으로 계속 찍어내는 노션 시스템",
   envKey: "NEXT_PUBLIC_URL_STUDIO_FULL",
 };
 export const UPSELL_CONSULT = {
-  title: "마케팅 제조실",
-  desc: "혼자 안 풀리는 지점을 전문가와 1:1로",
+  title: "관점 컨설팅 세션",
+  desc: "30분 비대면으로 상세페이지·제안서를 더 잘 팔리게",
   envKey: "NEXT_PUBLIC_URL_DIAG_1ON1",
 };

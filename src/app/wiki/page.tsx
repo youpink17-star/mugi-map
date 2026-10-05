@@ -17,7 +17,7 @@ export default function WikiPage({
         <Suspense
           fallback={
             <div className="flex flex-1 items-center justify-center py-24 text-[14px] text-muted">
-              내 사업 위키를 불러오는 중…
+              내 사업 정리본을 불러오는 중…
             </div>
           }
         >

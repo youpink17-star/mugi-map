@@ -40,9 +40,9 @@ export default function RestorePage({ params }: { params: { code: string } }) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-5">
         <div className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-card">
-          <p className="text-[16px] font-extrabold text-ink">이 위키를 덮어쓸까요?</p>
+          <p className="text-[16px] font-extrabold text-ink">이 정리본을 덮어쓸까요?</p>
           <p className="mt-2 text-[13.5px] leading-relaxed text-muted">
-            이 기기에 이미 작성 중인 위키가 있어요. 복구 링크의 내용으로 덮어쓰면{" "}
+            이 기기에 이미 작성 중인 정리본이 있어요. 복구 링크의 내용으로 덮어쓰면{" "}
             <b className="font-bold text-ink">되돌릴 수 없어요.</b>
           </p>
           <div className="mt-5 flex gap-2">
@@ -67,7 +67,7 @@ export default function RestorePage({ params }: { params: { code: string } }) {
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 py-24 text-center">
       {status === "checking" || status === "loading" ? (
-        <p className="text-[14px] font-semibold text-muted">위키를 불러오는 중…</p>
+        <p className="text-[14px] font-semibold text-muted">정리본을 불러오는 중…</p>
       ) : (
         <>
           <p className="text-[15px] font-bold text-ink">복구 코드를 찾을 수 없어요.</p>

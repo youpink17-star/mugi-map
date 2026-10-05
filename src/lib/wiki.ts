@@ -107,7 +107,7 @@ export const WIKI_SECTIONS: WikiSectionDef[] = [
   {
     id: "product",
     num: "3",
-    title: "판매 상품·서비스",
+    title: "판매할 것",
     purpose: "지금 팔고 있거나, 가장 먼저 검증할 상품을 정리하는 칸",
     desc:
       "내 사업이 고객에게 제공하는 상품·서비스를 정리합니다. 아직 준비 중이라면 ‘가장 먼저 팔아볼 상품 후보’를, 이미 운영 중이라면 ‘현재 판매 중인 대표 상품’을 적어주세요.",
@@ -120,7 +120,7 @@ export const WIKI_SECTIONS: WikiSectionDef[] = [
   {
     id: "target",
     num: "4",
-    title: "타겟",
+    title: "메인 고객",
     purpose: "이 사업이 가장 먼저 설득해야 할 사람을 정리하는 칸",
     desc:
       "내 상품을 가장 필요로 하는 고객이 누구인지 정리합니다. 나이·성별·직업만 적는 게 아니라, 고객이 어떤 상황에서 문제를 느끼고, 무엇을 원하며, 어떤 말로 해결책을 찾는지 적어주세요.",
@@ -133,7 +133,7 @@ export const WIKI_SECTIONS: WikiSectionDef[] = [
   {
     id: "diff",
     num: "5",
-    title: "차별화",
+    title: "차별화 포인트",
     purpose: "고객이 나를 고를 이유를 정리하는 칸",
     desc:
       "고객이 비슷한 선택지 사이에서 왜 내 사업을 골라야 하는지 정리합니다. 단순히 ‘남들과 다른 점’이 아니라, 고객이 중요하게 보는 기준에서 내가 어떤 이유로 선택될 수 있는지 적어주세요.",
@@ -173,7 +173,7 @@ export const WIKI_SECTIONS: WikiSectionDef[] = [
   {
     id: "funnel-awareness",
     num: "7.1",
-    title: "인지",
+    title: "알리기 (인지)",
     parentId: "funnel",
     purpose: "고객이 브랜드를 처음 접하는 방식",
     desc: "고객이 어떤 채널에서, 어떤 메시지를 통해 내 브랜드를 처음 알게 되는지 정리합니다.",
@@ -186,7 +186,7 @@ export const WIKI_SECTIONS: WikiSectionDef[] = [
   {
     id: "funnel-interest",
     num: "7.2",
-    title: "관심",
+    title: "관심 갖게 하기 (관심)",
     parentId: "funnel",
     purpose: "고객이 더 알아보고 싶어지는 방식",
     desc: "고객이 내 브랜드를 본 뒤, 어떤 정보·콘텐츠를 통해 더 오래 머물고 관심을 갖는지 정리합니다.",
@@ -199,7 +199,7 @@ export const WIKI_SECTIONS: WikiSectionDef[] = [
   {
     id: "funnel-consideration",
     num: "7.3",
-    title: "고려",
+    title: "혹하게 만들기 (고려)",
     parentId: "funnel",
     purpose: "고객이 검색하고 비교하며 구매 이유를 확인하는 방식",
     desc: "고객이 구매 전 무엇을 확인하고, 어떤 증거를 보고, 비슷한 선택지 중 내 브랜드를 고르게 되는지 정리합니다.",
@@ -212,7 +212,7 @@ export const WIKI_SECTIONS: WikiSectionDef[] = [
   {
     id: "funnel-purchase",
     num: "7.4",
-    title: "구매·관리",
+    title: "결정하게 만들기 (구매)",
     parentId: "funnel",
     purpose: "고객이 결제하고 다시 찾아오게 되는 방식",
     desc: "고객이 실제로 구매한 뒤, 어떻게 만족하고 후기·재구매·소개로 이어지는지 정리합니다.",

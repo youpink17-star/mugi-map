@@ -26,7 +26,9 @@ import {
   type WikiMetaPatch,
 } from "@/lib/wikiStore";
 import WikiSectionEditor from "./WikiSectionEditor";
+import { flowName as getFlowName, FLOWS, metaFromOverview } from "@/lib/questionFlows";
 import WikiDocument from "./WikiDocument";
+import { WikiUseActions } from "./WikiUses";
 import WikiJourney from "./WikiJourney";
 import WikiBackupLink from "./WikiBackupLink";
 import UpsellCard from "../UpsellCard";
@@ -44,6 +46,15 @@ function daysSince(iso?: string): number | null {
   if (Number.isNaN(start)) return null;
   const diff = Date.now() - start;
   return Math.max(1, Math.floor(diff / 86400000) + 1);
+}
+
+// 모바일: 카드가 열린 뒤 카드 제목이 헤더 아래에 오도록 스크롤 (입력칸으로 점프하지 않음)
+function scrollToCard(id: string, fallbackId?: string) {
+  if (typeof window === "undefined" || window.innerWidth >= 768) return;
+  window.setTimeout(() => {
+    const el = document.getElementById(`sec-${id}`) ?? (fallbackId ? document.getElementById(`sec-${fallbackId}`) : null);
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 60);
 }
 
 export default function WikiWorkspace() {
@@ -85,7 +96,8 @@ export default function WikiWorkspace() {
     const view = searchParams.get("view");
     if (sec && getSection(sec)) {
       setSelectedId(sec);
-      setExpandedId(sec);
+      setExpandedId(getSection(sec)?.parentId ?? sec);
+      scrollToCard(sec, getSection(sec)?.parentId ?? sec);
     }
     if (view === "doc") {
       setMode("read");
@@ -110,7 +122,7 @@ export default function WikiWorkspace() {
   if (!wiki) {
     return (
       <div className="flex flex-1 items-center justify-center py-24 text-[14px] text-muted">
-        내 사업 위키를 불러오는 중…
+        내 사업 정리본을 불러오는 중…
       </div>
     );
   }
@@ -122,9 +134,62 @@ export default function WikiWorkspace() {
     setWiki((prev) => (prev ? updateSection(prev, id, { content: text }) : prev));
   const status = (id: string, st: SectionStatus) =>
     setWiki((prev) => (prev ? updateSection(prev, id, { status: st }) : prev));
+  const answersOf = (w: BusinessWiki): Record<string, Record<string, string> | undefined> =>
+    Object.fromEntries(Object.entries(w.sections).map(([k, v]) => [k, v?.answers]));
+  // 답하는 도중에도 저장 (카드를 접거나 다른 화면에 다녀와도 이어서 답할 수 있게)
+  const flowProgress = (id: string, answers: Record<string, string>) =>
+    setWiki((prev) => (prev ? updateSection(prev, id, { answers }) : prev));
+  const flowDone = (id: string, answers: Record<string, string>, text: string) =>
+    setWiki((prev) => {
+      if (!prev) return prev;
+      const oldName = getFlowName(answersOf(prev), prev.title);
+      let next = updateSection(prev, id, { content: text, status: "complete", answers });
+      if (id === "overview") {
+        // 개요 답에 맞춰 위쪽 사업 정보(이름·판매 상태·유형)도 같이 맞춘다
+        const patch: WikiMetaPatch = {};
+        const nm = answers.name;
+        if (nm && nm !== "아직 없어요") patch.title = nm.slice(0, 60);
+        const m = metaFromOverview(answers);
+        if (m.selling) patch.sellingStatus = m.selling;
+        if (m.type && (m.selling === "selling" || prev.businessType === "undecided")) patch.businessType = m.type;
+        if (Object.keys(patch).length) next = setMeta(next, patch);
+        // 사업 이름이 바뀌면, 질문으로 만든 다른 칸 문장 속 이름도 같이 바꾼다
+        const newName = getFlowName(answersOf(next), next.title);
+        if (newName !== oldName) {
+          for (const [sid, flow] of Object.entries(FLOWS)) {
+            const st = next.sections[sid];
+            if (sid === "overview" || !st?.answers || !st.content) continue;
+            let before = "";
+            try {
+              before = flow.assemble(st.answers, { name: oldName });
+            } catch {
+              continue;
+            }
+            if (st.content === before) {
+              next = updateSection(next, sid, { content: flow.assemble(st.answers, { name: newName }) });
+            }
+          }
+        }
+      }
+      return next;
+    });
+
+  // 한 칸을 끝내면 바로 다음 빈칸으로 (없으면 한 장으로 보기)
+  function goNext() {
+    const next = emptiestSection(wiki!);
+    if (!next) {
+      setMode("read");
+      return;
+    }
+    const top = getSection(next)?.parentId ?? next;
+    pick(next);
+    setExpandedId(top);
+    scrollToCard(next, top);
+  }
   const meta = (patch: WikiMetaPatch) =>
     setWiki((prev) => (prev ? setMeta(prev, patch) : prev));
 
+  const allAnswers = answersOf(wiki);
   const rate = completionRate(wiki);
   const blanks = todaysBlanks(wiki, 3);
   const emptiest = emptiestSection(wiki);
@@ -141,6 +206,11 @@ export default function WikiWorkspace() {
         exampleCtx={exampleCtx}
         onCommit={(t) => commit(def.id, t)}
         onStatus={(s) => status(def.id, s)}
+        onFlowComplete={(a, text) => flowDone(def.id, a, text)}
+        onFlowProgress={(a) => flowProgress(def.id, a)}
+        onNext={goNext}
+        flowName={getFlowName(allAnswers, wiki!.title)}
+        allAnswers={allAnswers}
         autoFocus={autoFocus}
       />
     );
@@ -180,6 +250,8 @@ export default function WikiWorkspace() {
           <span className="text-[12px] font-bold text-muted">읽기 전용</span>
         </div>
         <WikiDocument wiki={wiki} rate={rate} onEdit={editFromDoc} />
+        {/* 완성한 정리본을 어디에 쓰는지 — 누르면 AI에 붙여넣을 글이 복사된다 */}
+        <WikiUseActions wiki={wiki} />
       </div>
     );
   }
@@ -201,7 +273,7 @@ export default function WikiWorkspace() {
       {/* 저장 실패 토스트 (용량 초과·프라이빗 모드) */}
       {saveFailed && (
         <div className="fixed inset-x-0 top-3 z-50 mx-auto w-fit max-w-[90%] rounded-xl bg-navy px-4 py-2.5 text-center text-[13px] font-semibold text-white shadow-card">
-          저장 공간이 가득 찼어요. 오래된 노트를 지우거나 브라우저 설정을 확인해 주세요.
+          저장 공간이 가득 찼어요. 오래된 아이디어를 지우거나 브라우저 설정을 확인해 주세요.
           <button onClick={() => setSaveFailed(false)} className="ml-2 font-bold text-pink">닫기</button>
         </div>
       )}
@@ -213,9 +285,17 @@ export default function WikiWorkspace() {
           onClick={() => setMode("read")}
           className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl border border-line bg-white py-3 text-[14px] font-bold text-ink"
         >
-          📄 내 사업 정리본 보기
+          📄 한 장으로 보기
         </button>
-        <TodayBlanks blanks={blanks} onPick={(id) => setExpandedId(id)} />
+        <TodayBlanks
+          blanks={blanks}
+          onPick={(id) => {
+            const top = getSection(id)?.parentId ?? id;
+            setSelectedId(id);
+            setExpandedId(top);
+            scrollToCard(id, top);
+          }}
+        />
         <div className="mt-5 space-y-2.5">
           {TOP_LEVEL.map((def) => (
             <MobileSection
@@ -223,6 +303,7 @@ export default function WikiWorkspace() {
               def={def}
               wiki={wiki}
               expandedId={expandedId}
+              activeChildId={selectedId}
               onToggle={(id) => setExpandedId((cur) => (cur === id ? null : id))}
               renderEditor={renderEditor}
             />
@@ -291,7 +372,7 @@ function DeskSidebarHeader({
 
   return (
     <div className="border-b border-line p-4">
-      <p className="text-[10px] font-bold uppercase tracking-wide text-purple">내 사업 위키</p>
+      <p className="text-[10px] font-bold uppercase tracking-wide text-purple">사업 정리본</p>
       {editTitle ? (
         <input
           autoFocus
@@ -336,7 +417,7 @@ function DeskSidebarHeader({
         onClick={onOpenDoc}
         className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl border border-line bg-app-bg py-2 text-[12.5px] font-bold text-ink"
       >
-        📄 내 사업 정리본 보기
+        📄 한 장으로 보기
       </button>
     </div>
   );
@@ -380,7 +461,7 @@ function InfoBox({
     <section className="mt-4 rounded-3xl bg-navy p-5 text-white lg:p-7">
       <div className="lg:flex lg:items-end lg:justify-between lg:gap-8">
         <div className="min-w-0 flex-1">
-          <p className="text-[12px] font-bold text-pink">내 사업 위키</p>
+          <p className="text-[12px] font-bold text-pink">사업 정리본</p>
           {editTitle ? (
             <input
               autoFocus
@@ -421,7 +502,7 @@ function InfoBox({
         {/* 완성도 */}
         <div className="mt-5 shrink-0 lg:mt-0 lg:w-[260px]">
           <div className="flex items-end justify-between">
-            <span className="text-[12px] font-bold text-white/70">위키 완성도</span>
+            <span className="text-[12px] font-bold text-white/70">정리본 완성도</span>
             <span className="text-[22px] font-extrabold text-pink">{rate}%</span>
           </div>
           <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-white/15">
@@ -554,7 +635,6 @@ function TodayBlanks({ blanks, onPick }: { blanks: string[]; onPick: (id: string
               key={id}
               onClick={() => {
                 onPick(id);
-                document.getElementById(`sec-${id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
               }}
               className="rounded-xl border border-pink/40 bg-soft-pink px-3.5 py-2.5 text-[13px] font-bold text-ink"
             >
@@ -574,12 +654,14 @@ function MobileSection({
   def,
   wiki,
   expandedId,
+  activeChildId,
   onToggle,
   renderEditor,
 }: {
   def: WikiSectionDef;
   wiki: BusinessWiki;
   expandedId: string | null;
+  activeChildId?: string;
   onToggle: (id: string) => void;
   renderEditor: (def: WikiSectionDef, autoFocus?: boolean) => React.ReactNode;
 }) {
@@ -588,7 +670,7 @@ function MobileSection({
   const st = wiki.sections[def.id]?.status ?? "empty";
 
   return (
-    <div id={`sec-${def.id}`} className="overflow-hidden rounded-2xl border border-line bg-white">
+    <div id={`sec-${def.id}`} className="scroll-mt-20 overflow-hidden rounded-2xl border border-line bg-white">
       <button
         onClick={() => onToggle(def.id)}
         className="flex w-full items-center gap-3 px-4 py-3.5 text-left"
@@ -605,7 +687,12 @@ function MobileSection({
             <div className="space-y-2.5">
               <p className="text-[13px] leading-relaxed text-muted">{def.purpose}</p>
               {FUNNEL_CHILDREN.map((c) => (
-                <details key={c.id} id={`sec-${c.id}`} className="rounded-xl border border-line">
+                <details
+                  key={c.id}
+                  id={`sec-${c.id}`}
+                  open={activeChildId === c.id || undefined}
+                  className="scroll-mt-20 rounded-xl border border-line"
+                >
                   <summary className="flex cursor-pointer items-center gap-2 px-3.5 py-3 text-[14px] font-bold text-ink">
                     <span className="text-[11px] font-extrabold text-purple">{c.num}</span>
                     {c.title}
@@ -618,7 +705,7 @@ function MobileSection({
               ))}
             </div>
           ) : (
-            renderEditor(def, true)
+            renderEditor(def, false)
           )}
         </div>
       )}
