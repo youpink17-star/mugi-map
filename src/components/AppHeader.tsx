@@ -75,7 +75,7 @@ export default function AppHeader({
             <MenuLink href="/" onClick={() => setOpen(false)}>홈</MenuLink>
             <MenuLink href="/wiki" onClick={() => setOpen(false)}>사업 정리본</MenuLink>
             <MenuLink href="/uses" onClick={() => setOpen(false)}>지도 활용법</MenuLink>
-            <MenuLink href="/diagnosis" onClick={() => setOpen(false)}>무기진단</MenuLink>
+            <MenuLink href="/diagnosis" onClick={() => setOpen(false)}>무기 유형 테스트</MenuLink>
             <MenuLink href="/tools" onClick={() => setOpen(false)}>무기상점</MenuLink>
             <MenuLink href="/notes" onClick={() => setOpen(false)}>아이디어</MenuLink>
           </div>

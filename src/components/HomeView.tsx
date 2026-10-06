@@ -302,10 +302,10 @@ export default function HomeView() {
             </span>
             <span className="min-w-0 flex-1">
               <span className="block text-[14.5px] font-extrabold text-ink">
-                막막할 땐 <span className="text-pink">무기진단</span>
+                막막할 땐 <span className="text-pink">무기 유형 테스트</span>
               </span>
               <span className="mt-0.5 block text-[12.5px] leading-relaxed text-muted">
-                내가 뭘 잘하고, 뭘 팔 수 있고, 어떻게 팔면 좋을지 테스트로 찾아보세요.
+                나에게 맞는 일하는 방식과 내 무기 유형을 테스트로 찾아보세요.
               </span>
             </span>
             <span className="shrink-0 text-[18px] font-extrabold text-pink">→</span>

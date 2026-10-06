@@ -51,7 +51,7 @@ export const STORE_TIERS: StoreTier[] = [
       },
       {
         id: "free-diagnosis",
-        title: "무기진단",
+        title: "무기 유형 테스트",
         badge: "무료",
         desc: "24문항으로 내가 잘하는 것과 무기 유형 찾기",
         defaultUrl: DIAGNOSIS_URL,
