@@ -24,6 +24,8 @@ export default function WikiSectionEditor({
   onFlowComplete,
   onFlowProgress,
   onNext,
+  onOpenDoc,
+  allDone = false,
   flowName = "내 사업",
   allAnswers = {},
   autoFocus = false,
@@ -36,6 +38,8 @@ export default function WikiSectionEditor({
   onFlowComplete?: (answers: Record<string, string>, text: string) => void;
   onFlowProgress?: (answers: Record<string, string>) => void;
   onNext?: () => void;
+  onOpenDoc?: () => void; // 한 장으로 보기 열기
+  allDone?: boolean; // 모든 칸을 다 채웠는지 — 다 채웠으면 "한 장으로 보기"를 다음 할 일로 가장 크게 보여준다
   flowName?: string;
   allAnswers?: Record<string, Record<string, string> | undefined>;
   autoFocus?: boolean;
@@ -140,18 +144,32 @@ export default function WikiSectionEditor({
               )}
               <p className="text-[15px] leading-[1.75] text-ink">{state.content}</p>
             </div>
-            {onNext && (
-              <button
-                onClick={onNext}
-                className="mt-3 w-full rounded-2xl bg-pink-grad py-3.5 text-[15px] font-extrabold text-white shadow-cta"
-              >
-                다음 칸 채우기 →
-              </button>
+            {allDone && onOpenDoc ? (
+              // 다 채운 사람: 다음 할 일은 "한 장으로 보기" 하나 — 나머지 버튼은 흐리게
+              <div className="mt-3 rounded-2xl border border-pink/40 bg-soft-pink p-4 text-center">
+                <p className="text-[15px] font-extrabold text-ink">모든 칸을 다 채웠어요</p>
+                <p className="mt-0.5 text-[12.5px] text-muted">이제 한 장으로 모아 보고, 바로 꺼내 쓸 차례입니다.</p>
+                <button
+                  onClick={onOpenDoc}
+                  className="mt-3 w-full rounded-2xl bg-pink-grad py-3.5 text-[15px] font-extrabold text-white shadow-cta"
+                >
+                  📄 한 장으로 보기 →
+                </button>
+              </div>
+            ) : (
+              onNext && (
+                <button
+                  onClick={onNext}
+                  className="mt-3 w-full rounded-2xl bg-pink-grad py-3.5 text-[15px] font-extrabold text-white shadow-cta"
+                >
+                  다음 칸 채우기 →
+                </button>
+              )
             )}
             {!answeredByFlow && (
               <p className="mt-3 text-[11.5px] text-muted">질문으로 새로 쓰면 지금 적힌 글은 새 문장으로 바뀌어요.</p>
             )}
-            <div className="mt-2 flex gap-2">
+            <div className={`mt-2 flex gap-2 transition-opacity ${allDone && onOpenDoc ? "opacity-50 hover:opacity-100" : ""}`}>
               <button
                 onClick={() => {
                   setJustDone(false);
@@ -168,6 +186,15 @@ export default function WikiSectionEditor({
                 문장 직접 고치기
               </button>
             </div>
+            {/* 아직 빈칸이 남았어도, 지금까지 채운 걸 한 장으로 볼 수 있게 */}
+            {!allDone && onOpenDoc && (
+              <button
+                onClick={onOpenDoc}
+                className="mt-2 w-full rounded-xl border border-line bg-white py-2.5 text-[13px] font-bold text-ink"
+              >
+                📄 지금까지 채운 것 한 장으로 보기
+              </button>
+            )}
           </div>
         )}
       </div>

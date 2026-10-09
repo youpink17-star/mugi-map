@@ -209,6 +209,12 @@ export default function WikiWorkspace() {
         onFlowComplete={(a, text) => flowDone(def.id, a, text)}
         onFlowProgress={(a) => flowProgress(def.id, a)}
         onNext={goNext}
+        // 칸 아래쪽에서 누르므로, 한 장 화면은 맨 위부터 보이게 올려준다
+        onOpenDoc={() => {
+          setMode("read");
+          window.scrollTo({ top: 0 });
+        }}
+        allDone={!emptiest}
         flowName={getFlowName(allAnswers, wiki!.title)}
         allAnswers={allAnswers}
         autoFocus={autoFocus}
